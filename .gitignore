@@ -174,3 +174,4 @@ cython_debug/
 
 # Ignore the data folder
 data/Car_sale_ads.csv
+data_processing/processed_car_sale_ads.csv
