@@ -1,8 +1,14 @@
 from dataclasses import dataclass
 
 
+
 @dataclass
-class ClassificationEvaluationResults:
+class EvaluationResults:
+    pass
+
+
+@dataclass
+class ClassificationEvaluationResults(EvaluationResults):
     accuracy: float
     precision: float
     recall: float
@@ -10,7 +16,7 @@ class ClassificationEvaluationResults:
 
 
 @dataclass
-class RegressionEvaluationResults:
+class RegressionEvaluationResults(EvaluationResults):
     mae: float
     mse: float
     rmse: float
