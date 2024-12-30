@@ -1,12 +1,12 @@
-from sklearn.metrics import (
-    accuracy_score, precision_score, 
-    recall_score, f1_score
-)
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from parameters.evaluation_results import ClassificationEvaluationResults
 
 import numpy as np
 
-def evaluate_classification(y_pred: np.ndarray, y_test: np.ndarray) -> ClassificationEvaluationResults:
+
+def evaluate_classification(
+    y_pred: np.ndarray, y_test: np.ndarray
+) -> ClassificationEvaluationResults:
     """
     Oblicza metryki klasyfikacyjne dla przewidywanych i rzeczywistych etykiet klas.
 
@@ -24,18 +24,18 @@ def evaluate_classification(y_pred: np.ndarray, y_test: np.ndarray) -> Classific
         ClassificationEvaluationResults: Wyniki obliczonych metryk.
     """
     accuracy = accuracy_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred, average='weighted', zero_division=0)
-    recall = recall_score(y_test, y_pred, average='weighted', zero_division=0)
-    f1 = f1_score(y_test, y_pred, average='weighted', zero_division=0)
+    precision = precision_score(y_test, y_pred, average="weighted", zero_division=0)
+    recall = recall_score(y_test, y_pred, average="weighted", zero_division=0)
+    f1 = f1_score(y_test, y_pred, average="weighted", zero_division=0)
 
     return ClassificationEvaluationResults(
-        accuracy=accuracy,
-        precision=precision,
-        recall=recall,
-        f1=f1
+        accuracy=accuracy, precision=precision, recall=recall, f1=f1
     )
 
-def values_to_class_labels(values: np.ndarray, unique_intervals: np.ndarray) -> np.ndarray:
+
+def values_to_class_labels(
+    values: np.ndarray, unique_intervals: np.ndarray
+) -> np.ndarray:
     """
     Przypisuje wartości do etykiet klas na podstawie unikalnych przedziałów.
 

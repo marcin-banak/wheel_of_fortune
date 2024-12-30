@@ -3,7 +3,10 @@ from parameters.evaluation_results import RegressionEvaluationResults
 
 import numpy as np
 
-def evaluate_regression(y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
+
+def evaluate_regression(
+    y_pred: np.ndarray, y_test: np.ndarray
+) -> RegressionEvaluationResults:
     """
     Oblicza metryki regresyjne dla podanych przewidywanych i rzeczywistych wartości.
 
@@ -27,13 +30,8 @@ def evaluate_regression(y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEva
     r2 = r2_score(y_test, y_pred)
     mape = np.mean(np.abs((y_test - y_pred) / y_test)) * 100
 
-    return RegressionEvaluationResults(
-        mae=mae, 
-        mse=mse, 
-        rmse=rmse, 
-        r2=r2, 
-        mape=mape
-    )
+    return RegressionEvaluationResults(mae=mae, mse=mse, rmse=rmse, r2=r2, mape=mape)
+
 
 def interval_to_midpoint(intervals: np.ndarray) -> np.ndarray:
     """
