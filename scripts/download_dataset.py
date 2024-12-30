@@ -1,4 +1,5 @@
 import os
+
 from kaggle.api.kaggle_api_extended import KaggleApi
 
 
@@ -15,5 +16,5 @@ def download_kaggle_dataset(dataset, target_dir="data"):
 
 
 if __name__ == "__main__":
-    dataset_name = "bartoszpieniak/poland-cars-for-sale-dataset"  # Replace with your Kaggle dataset name
+    dataset_name = "bartoszpieniak/poland-cars-for-sale-dataset"
     download_kaggle_dataset(dataset_name)
