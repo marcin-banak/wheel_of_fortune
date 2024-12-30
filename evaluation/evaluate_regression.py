@@ -6,21 +6,21 @@ import numpy as np
 
 def evaluate_regression(y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
     """
-    Oblicza metryki regresyjne dla podanych przewidywanych i rzeczywistych wartości.
+    Calculates regression metrics for the given predicted and actual values.
 
-    Metryki:
-        - MAE: Średni błąd bezwzględny
-        - MSE: Średni błąd kwadratowy
-        - RMSE: Pierwiastek z MSE
-        - R2: Współczynnik determinacji
-        - MAPE: Średni procentowy błąd bezwzględny
+    Metrics:
+        - MAE: Mean Absolute Error
+        - MSE: Mean Squared Error
+        - RMSE: Root Mean Squared Error
+        - R2: Coefficient of Determination
+        - MAPE: Mean Absolute Percentage Error
 
     Args:
-        y_pred (np.ndarray): Przewidywane wartości.
-        y_test (np.ndarray): Rzeczywiste wartości.
+        y_pred (np.ndarray): Predicted values.
+        y_test (np.ndarray): Actual values.
 
     Returns:
-        RegressionEvaluationResults: Wyniki obliczeń zawierające metryki regresji.
+        RegressionEvaluationResults: Results containing the computed regression metrics.
     """
     mae = mean_absolute_error(y_test, y_pred)
     mse = mean_squared_error(y_test, y_pred)
@@ -33,13 +33,13 @@ def evaluate_regression(y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEva
 
 def intervals_to_midpoints(intervals: np.ndarray) -> np.ndarray:
     """
-    Zamienia tablicę przedziałów (min, max) na tablicę wartości środkowych.
+    Converts an array of intervals (min, max) to an array of midpoint values.
 
     Args:
-        intervals (np.ndarray): Tablica krotek [(min1, max1), (min2, max2), ...].
+        intervals (np.ndarray): Array of tuples [(min1, max1), (min2, max2), ...].
 
     Returns:
-        np.ndarray: Tablica wartości środkowych dla każdego przedziału.
+        np.ndarray: Array of midpoint values for each interval.
     """
     midpoints = [(interval[0] + interval[1]) / 2.0 for interval in intervals]
     return np.array(midpoints)

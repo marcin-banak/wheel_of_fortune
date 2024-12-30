@@ -8,20 +8,20 @@ def evaluate_classification(
     y_pred: np.ndarray, y_test: np.ndarray
 ) -> ClassificationEvaluationResults:
     """
-    Oblicza metryki klasyfikacyjne dla przewidywanych i rzeczywistych etykiet klas.
+    Calculates classification metrics for predicted and actual class labels.
 
-    Metryki:
+    Metrics:
         - Accuracy
-        - Precision (średnia ważona)
-        - Recall (średnia ważona)
-        - F1-score (średnia ważona)
+        - Precision (weighted average)
+        - Recall (weighted average)
+        - F1-score (weighted average)
 
     Args:
-        y_pred (np.ndarray): Przewidywane etykiety klas.
-        y_test (np.ndarray): Rzeczywiste etykiety klas.
+        y_pred (np.ndarray): Predicted class labels.
+        y_test (np.ndarray): Actual class labels.
 
     Returns:
-        ClassificationEvaluationResults: Wyniki obliczonych metryk.
+        ClassificationEvaluationResults: Results of computed metrics.
     """
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred, average="weighted", zero_division=0)
@@ -35,14 +35,14 @@ def evaluate_classification(
 
 def values_to_class_labels(values: np.ndarray, unique_intervals: np.ndarray) -> np.ndarray:
     """
-    Przypisuje wartości do etykiet klas na podstawie unikalnych przedziałów.
+    Assigns values to class labels based on unique intervals.
 
     Args:
-        values (np.ndarray): Tablica wartości liczbowych do przypisania.
-        unique_intervals (np.ndarray): Tablica unikalnych przedziałów w postaci [(low1, high1), (low2, high2), ...].
+        values (np.ndarray): Array of numerical values to be assigned.
+        unique_intervals (np.ndarray): Array of unique intervals in the form [(low1, high1), (low2, high2), ...].
 
     Returns:
-        np.ndarray: Tablica etykiet klas odpowiadających przedziałom lub -1 dla wartości spoza zakresu.
+        np.ndarray: Array of class labels corresponding to the intervals or -1 for values out of range.
     """
     labels = []
     for v in values:
