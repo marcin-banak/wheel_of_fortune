@@ -4,7 +4,9 @@ from parameters.evaluation_results import RegressionEvaluationResults
 import numpy as np
 
 
-def evaluate_regression(y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
+def evaluate_regression(
+    y_pred: np.ndarray, y_test: np.ndarray
+) -> RegressionEvaluationResults:
     """
     Calculates regression metrics for the given predicted and actual values.
 

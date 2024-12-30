@@ -7,14 +7,13 @@ from evaluation_results import EvaluationResults
 from model_hyperparameters import ModelHyperparams
 
 
-
 def cartesian_product(param_grid: Dict[str, List[Any]]) -> List[Dict[Any, Any]]:
     """
     Creates cartesian product of parameters.
 
     Args:
         param_grid (dict): Dictionary containing parameter names and lists of possible values.
-    
+
     Returns:
         List[Dict]: List of variants of hyperparameters with their names.
     """
@@ -30,7 +29,7 @@ def eval_model(
     X_train: np.ndarray,
     y_train: np.ndarray,
     X_test: np.ndarray,
-    y_test: np.ndarray
+    y_test: np.ndarray,
 ) -> EvaluationResults:
     """
     Evaluates model's performance on given data using given evaluating function with given hyperparameters applied.
@@ -44,17 +43,17 @@ def eval_model(
         X_test (np.ndarray): Test data features.
         y_test (np.ndarray): Test data labels.
 
-    Returns: 
+    Returns:
         EvaluationResults: Evaluated score of the trained model.
     """
     model = model(**params)
-        
+
     # Train the model with current parameters
     model.fit(X_train, y_train)
-        
+
     # Predict on the test set
     y_pred = model.predict(X_test)
-        
+
     # Evaluate the predictions
     score = eval_function(y_pred, y_test)
 
@@ -69,7 +68,7 @@ def hyperparameter_tuning(
     y_train: np.ndarray,
     X_test: np.ndarray,
     y_test: np.ndarray,
-    hyperparams_dataclass: Type[ModelHyperparams]
+    hyperparams_dataclass: Type[ModelHyperparams],
 ) -> ModelHyperparams:
     """
     Performs hyperparameter tuning using Cartesian product of parameter values.
@@ -88,7 +87,7 @@ def hyperparameter_tuning(
         ModelHyperparams: The best combination of hyperparameters as a dataclass.
     """
 
-    best_score = float('inf')
+    best_score = float("inf")
     best_params = None
 
     param_combinations = cartesian_product(param_grid)
@@ -101,35 +100,37 @@ def hyperparameter_tuning(
             X_train=X_train,
             y_train=y_train,
             X_test=X_test,
-            y_test=y_test
+            y_test=y_test,
         )
 
         # Do przerobienia. Dorobić komparator
         if score < best_score:
             best_score = score
             best_params = params
-        
-        print(f'Evaluated {((i / len(param_combinations)) * 100):.2f}% of the params.')
+
+        print(f"Evaluated {((i / len(param_combinations)) * 100):.2f}% of the params.")
 
     return hyperparams_dataclass(**best_params)
 
+
 if __name__ == "__main__":
+
     def test_hyperparameter_tuning():
         from model_hyperparameters import XGBoostHyperparams
 
         def eval_function(y_pred, y_test):
             return mean_squared_error(y_test, y_pred)
-        
+
         param_grid = {
-            'learning_rate': [0.01, 0.1, 0.2],
-            'max_depth': [3, 5, 7],
-            'n_estimators': [50, 100, 200],
-            'min_child_weight': [1, 3, 5],
-            'gamma': [0, 0.1, 0.2],
-            'subsample': [0.8, 1.0],
-            'colsample_bytree': [0.8, 1.0],
-            'reg_alpha': [0, 0.01, 0.1, 1.0],
-            'reg_lambda': [0, 1.0, 2.0, 5.0]
+            "learning_rate": [0.01, 0.1, 0.2],
+            "max_depth": [3, 5, 7],
+            "n_estimators": [50, 100, 200],
+            "min_child_weight": [1, 3, 5],
+            "gamma": [0, 0.1, 0.2],
+            "subsample": [0.8, 1.0],
+            "colsample_bytree": [0.8, 1.0],
+            "reg_alpha": [0, 0.01, 0.1, 1.0],
+            "reg_lambda": [0, 1.0, 2.0, 5.0],
         }
 
         X_train, X_test = np.random.rand(100, 10), np.random.rand(20, 10)
@@ -143,7 +144,7 @@ if __name__ == "__main__":
             y_train=y_train,
             X_test=X_test,
             y_test=y_test,
-            hyperparams_dataclass=XGBoostHyperparams
+            hyperparams_dataclass=XGBoostHyperparams,
         )
 
         print(best_hyperparams)

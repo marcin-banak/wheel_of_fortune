@@ -33,7 +33,9 @@ def evaluate_classification(
     )
 
 
-def values_to_class_labels(values: np.ndarray, unique_intervals: np.ndarray) -> np.ndarray:
+def values_to_class_labels(
+    values: np.ndarray, unique_intervals: np.ndarray
+) -> np.ndarray:
     """
     Assigns values to class labels based on unique intervals.
 
