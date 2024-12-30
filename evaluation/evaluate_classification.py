@@ -33,9 +33,7 @@ def evaluate_classification(
     )
 
 
-def values_to_class_labels(
-    values: np.ndarray, unique_intervals: np.ndarray
-) -> np.ndarray:
+def values_to_class_labels(values: np.ndarray, unique_intervals: np.ndarray) -> np.ndarray:
     """
     Przypisuje wartości do etykiet klas na podstawie unikalnych przedziałów.
 

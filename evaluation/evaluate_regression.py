@@ -4,9 +4,7 @@ from parameters.evaluation_results import RegressionEvaluationResults
 import numpy as np
 
 
-def evaluate_regression(
-    y_pred: np.ndarray, y_test: np.ndarray
-) -> RegressionEvaluationResults:
+def evaluate_regression(y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
     """
     Oblicza metryki regresyjne dla podanych przewidywanych i rzeczywistych wartości.
 
@@ -33,7 +31,7 @@ def evaluate_regression(
     return RegressionEvaluationResults(mae=mae, mse=mse, rmse=rmse, r2=r2, mape=mape)
 
 
-def interval_to_midpoint(intervals: np.ndarray) -> np.ndarray:
+def intervals_to_midpoints(intervals: np.ndarray) -> np.ndarray:
     """
     Zamienia tablicę przedziałów (min, max) na tablicę wartości środkowych.
 
