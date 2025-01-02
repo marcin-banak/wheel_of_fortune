@@ -1,12 +1,11 @@
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from parameters.evaluation_results import RegressionEvaluationResults
+from typing import List, Tuple
 
 import numpy as np
 
 
-def evaluate_regression(
-    y_pred: np.ndarray, y_test: np.ndarray
-) -> RegressionEvaluationResults:
+def evaluate_regression(y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
     """
     Calculates regression metrics for the given predicted and actual values.
 
@@ -18,8 +17,8 @@ def evaluate_regression(
         - MAPE: Mean Absolute Percentage Error
 
     Args:
-        y_pred (np.ndarray): Predicted values.
-        y_test (np.ndarray): Actual values.
+        y_pred: Predicted values.
+        y_test: Actual values.
 
     Returns:
         RegressionEvaluationResults: Results containing the computed regression metrics.
@@ -33,15 +32,19 @@ def evaluate_regression(
     return RegressionEvaluationResults(mae=mae, mse=mse, rmse=rmse, r2=r2, mape=mape)
 
 
-def intervals_to_midpoints(intervals: np.ndarray) -> np.ndarray:
+def labels_to_midpoints(
+    labels: np.ndarray, standard_intervals: List[Tuple[float, float]]
+) -> np.ndarray:
     """
-    Converts an array of intervals (min, max) to an array of midpoint values.
+    Converts an array of labels of intervals (min, max) to an array of midpoint values.
 
     Args:
-        intervals (np.ndarray): Array of tuples [(min1, max1), (min2, max2), ...].
+        labels: Array of labels representing indices of standard intervals.
+        standard_intervals: List of predefined intervals, where each interval is a tuple (min, max).
 
     Returns:
         np.ndarray: Array of midpoint values for each interval.
     """
+    intervals = [standard_intervals[label] for label in labels]
     midpoints = [(interval[0] + interval[1]) / 2.0 for interval in intervals]
     return np.array(midpoints)

@@ -1,5 +1,6 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from parameters.evaluation_results import ClassificationEvaluationResults
+from typing import List, Tuple
 
 import numpy as np
 
@@ -17,8 +18,8 @@ def evaluate_classification(
         - F1-score (weighted average)
 
     Args:
-        y_pred (np.ndarray): Predicted class labels.
-        y_test (np.ndarray): Actual class labels.
+        y_pred: Predicted class labels.
+        y_test: Actual class labels.
 
     Returns:
         ClassificationEvaluationResults: Results of computed metrics.
@@ -34,14 +35,14 @@ def evaluate_classification(
 
 
 def values_to_class_labels(
-    values: np.ndarray, unique_intervals: np.ndarray
+    values: np.ndarray, standard_intervals: List[Tuple[float, float]]
 ) -> np.ndarray:
     """
     Assigns values to class labels based on unique intervals.
 
     Args:
-        values (np.ndarray): Array of numerical values to be assigned.
-        unique_intervals (np.ndarray): Array of unique intervals in the form [(low1, high1), (low2, high2), ...].
+        values: Array of numerical values to be assigned.
+        standard_intervals: Array of unique intervals in the form [(low1, high1), (low2, high2), ...].
 
     Returns:
         np.ndarray: Array of class labels corresponding to the intervals or -1 for values out of range.
@@ -49,7 +50,7 @@ def values_to_class_labels(
     labels = []
     for v in values:
         matched_label = -1
-        for label, interval in enumerate(unique_intervals):
+        for label, interval in enumerate(standard_intervals):
             low, high = interval
             if low <= v <= high:
                 matched_label = label
