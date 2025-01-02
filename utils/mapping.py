@@ -2,11 +2,13 @@ from typing import List, Tuple
 import numpy as np
 
 
-def intervals_to_labels(intervals: List[Tuple[float, float]]) -> np.array:
+def intervals_to_labels(
+    tree_intervals: List[Tuple[float, float]], standard_intervals: List[Tuple[float, float]]
+) -> np.array:
     """
     Maps intervals to labels based on their index.
     """
-    return np.array([i for i, _ in enumerate(intervals)])
+    return np.array([standard_intervals.index(interval) for interval in tree_intervals])
 
 
 def labels_to_intervals(
