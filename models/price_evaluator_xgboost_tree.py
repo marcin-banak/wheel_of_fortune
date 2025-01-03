@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score
 from xgboost import XGBClassifier
 
 
-class PriceClassifierModel(XGBClassifier):
+class PriceClassifierXGBoostModel(XGBClassifier):
     """
     A custom classifier model based on XGBoost for price classification tasks.
 
