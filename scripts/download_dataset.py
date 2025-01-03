@@ -3,7 +3,7 @@ import os
 from kaggle.api.kaggle_api_extended import KaggleApi
 
 
-def download_kaggle_dataset(dataset, target_dir="data"):
+def download_kaggle_dataset(dataset, target_dir="../data"):
     api = KaggleApi()
     api.authenticate()
 
