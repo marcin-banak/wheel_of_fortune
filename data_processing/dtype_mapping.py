@@ -22,7 +22,7 @@ def dtype_mapping(data: pd.DataFrame) -> pd.DataFrame:
         "First_owner": "boolean",
         "Vehicle_generation": "category",
         "Offer_publication_date": "category",
-        "Advanced_model": "category"
+        "Advanced_model": "category",
     }
 
     return data.astype(dtype_mapping)

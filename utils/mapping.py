@@ -3,7 +3,8 @@ import numpy as np
 
 
 def intervals_to_labels(
-    tree_intervals: List[Tuple[float, float]], standard_intervals: List[Tuple[float, float]]
+    tree_intervals: List[Tuple[float, float]],
+    standard_intervals: List[Tuple[float, float]],
 ) -> np.array:
     """
     Maps intervals to labels based on their index.
