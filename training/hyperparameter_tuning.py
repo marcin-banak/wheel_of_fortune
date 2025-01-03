@@ -3,8 +3,8 @@ from typing import Callable, List, Dict, Any, Type
 import xgboost as xgb
 import numpy as np
 from sklearn.metrics import mean_squared_error
-from evaluation_results import EvaluationResults
-from model_hyperparameters import ModelHyperparams
+from parameters.evaluation_results import EvaluationResults
+from parameters.model_hyperparameters import ModelHyperparams
 
 
 def cartesian_product(param_grid: Dict[str, List[Any]]) -> List[Dict[Any, Any]]:
@@ -116,7 +116,7 @@ def hyperparameter_tuning(
 if __name__ == "__main__":
 
     def test_hyperparameter_tuning():
-        from model_hyperparameters import XGBoostHyperparams
+        from parameters.model_hyperparameters import XGBoostHyperparams
 
         def eval_function(y_pred, y_test):
             return mean_squared_error(y_test, y_pred)
