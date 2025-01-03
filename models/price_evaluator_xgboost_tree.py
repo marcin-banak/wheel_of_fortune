@@ -31,6 +31,7 @@ class PriceClassifierXGBoostModel(XGBClassifier):
             random_state=random_state,
             use_label_encoder=False,
             eval_metric="logloss",
+            enable_categorical=True,
             **kwargs
         )
 

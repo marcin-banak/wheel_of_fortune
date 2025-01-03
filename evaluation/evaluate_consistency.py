@@ -39,6 +39,11 @@ def evaluate_model_consistency(
     consistency_percentage = (consistent_count / total_cases) * 100
 
     inconsistent_cases = total_cases - consistent_count
-    average_distance = total_distance / inconsistent_cases if inconsistent_cases > 0 else 0
+    average_distance = (
+        total_distance / inconsistent_cases if inconsistent_cases > 0 else 0
+    )
 
-    return {"consistency_percentage": consistency_percentage, "average_distance": average_distance}
+    return {
+        "consistency_percentage": consistency_percentage,
+        "average_distance": average_distance,
+    }
