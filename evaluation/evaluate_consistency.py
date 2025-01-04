@@ -1,12 +1,22 @@
+from dataclasses import dataclass
 from typing import List, Tuple
+
 import numpy as np
+
+from evaluation.AbstractEvaluationResults import AbstractEvaluationResults
+
+
+@dataclass
+class ConsistencyEvaluationResults(AbstractEvaluationResults):
+    consistency_percentage: float
+    average_distance: float
 
 
 def evaluate_model_consistency(
     regression_predictions: np.ndarray,
     tree_labels: np.ndarray,
     standard_intervals: List[Tuple[float, float]],
-):
+) -> ConsistencyEvaluationResults:
     """
     Checks the consistency of linear regression predictions with the intervals predicted by decision trees.
 
@@ -39,11 +49,8 @@ def evaluate_model_consistency(
     consistency_percentage = (consistent_count / total_cases) * 100
 
     inconsistent_cases = total_cases - consistent_count
-    average_distance = (
-        total_distance / inconsistent_cases if inconsistent_cases > 0 else 0
-    )
+    average_distance = total_distance / inconsistent_cases if inconsistent_cases > 0 else 0
 
-    return {
-        "consistency_percentage": consistency_percentage,
-        "average_distance": average_distance,
-    }
+    return ConsistencyEvaluationResults(
+        consistency_percentage=consistency_percentage, average_distance=average_distance
+    )

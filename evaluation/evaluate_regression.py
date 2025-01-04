@@ -1,13 +1,48 @@
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from parameters.evaluation_results import RegressionEvaluationResults
+from dataclasses import dataclass
 from typing import List, Tuple
 
 import numpy as np
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+from evaluation.AbstractEvaluationResults import AbstractEvaluationResults
 
 
-def evaluate_regression(
-    y_pred: np.ndarray, y_test: np.ndarray
-) -> RegressionEvaluationResults:
+@dataclass
+class RegressionEvaluationResults(AbstractEvaluationResults):
+    """
+    Class to store and evaluate regression results.
+    """
+
+    mae: float
+    mse: float
+    rmse: float
+    r2: float
+    mape: float
+
+    def cost_function(self) -> float:
+        """
+        Computes a weighted cost function for regression metrics.
+        Lower scores indicate a better model.
+
+        :returns: The weighted sum of regression metrics.
+        """
+        return self.mae * 0.4 + self.rmse * 0.3 + self.mape * 0.2 + self.r2 * -0.2
+
+    def __gt__(self, other) -> bool:
+        """
+        Compares two RegressionEvaluationResults objects using the cost function.
+
+        other : Another RegressionEvaluationResults object to compare with.
+        :returns: True if the current object has a lower cost function score, False otherwise.
+        """
+        if not isinstance(other, RegressionEvaluationResults):
+            raise TypeError(
+                "Comparison is only supported between RegressionEvaluationResults objects."
+            )
+        return self.cost_function() < other.cost_function()
+
+
+def evaluate_regression(y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
     """
     Calculates regression metrics for the given predicted and actual values.
 

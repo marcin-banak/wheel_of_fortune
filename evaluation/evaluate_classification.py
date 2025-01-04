@@ -1,8 +1,45 @@
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from parameters.evaluation_results import ClassificationEvaluationResults
+from dataclasses import dataclass
 from typing import List, Tuple
 
 import numpy as np
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+
+from evaluation.AbstractEvaluationResults import AbstractEvaluationResults
+
+
+@dataclass
+class ClassificationEvaluationResults(AbstractEvaluationResults):
+    """
+    Class to store and evaluate classification results.
+    """
+
+    accuracy: float
+    precision: float
+    recall: float
+    f1: float
+
+    def cost_function(self) -> float:
+        """
+        Computes a weighted cost function for classification metrics.
+        Higher scores indicate a better model.
+
+        :returns: The weighted sum of classification metrics.
+        """
+        return self.f1 * 0.4 + self.accuracy * 0.3 + self.precision * 0.2 + self.recall * 0.1
+
+    def __gt__(self, other) -> bool:
+        """
+        Compares two ClassificationEvaluationResults objects using the cost function.
+
+        other: Another ClassificationEvaluationResults object to compare with.
+        :returns: True if the current object has a higher cost function score, False otherwise.
+        """
+        if not isinstance(other, ClassificationEvaluationResults):
+            raise TypeError(
+                "Comparison is only supported between ClassificationEvaluationResults objects."
+            )
+
+        return self.cost_function() > other.cost_function()
 
 
 def evaluate_classification(

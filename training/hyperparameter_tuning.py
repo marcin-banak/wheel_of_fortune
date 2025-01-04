@@ -1,75 +1,22 @@
-from itertools import product
-from typing import Callable, List, Dict, Any, Type
-import xgboost as xgb
+from typing import Any, Callable, Dict, List, Tuple, Type
+
 import numpy as np
-from sklearn.metrics import mean_squared_error
-from parameters.evaluation_results import EvaluationResults
-from parameters.model_hyperparameters import ModelHyperparams
 
-
-def cartesian_product(param_grid: Dict[str, List[Any]]) -> List[Dict[Any, Any]]:
-    """
-    Creates cartesian product of parameters.
-
-    Args:
-        param_grid (dict): Dictionary containing parameter names and lists of possible values.
-
-    Returns:
-        List[Dict]: List of variants of hyperparameters with their names.
-    """
-    keys, values = zip(*param_grid.items())
-    param_combinations = [dict(zip(keys, v)) for v in product(*values)]
-    return param_combinations
-
-
-def eval_model(
-    model: Type,
-    params: Dict[Any, Any],
-    eval_function: Callable[[np.ndarray, np.ndarray], float],
-    X_train: np.ndarray,
-    y_train: np.ndarray,
-    X_test: np.ndarray,
-    y_test: np.ndarray,
-) -> EvaluationResults:
-    """
-    Evaluates model's performance on given data using given evaluating function with given hyperparameters applied.
-
-    Args:
-        model (Type): The model class to instantiate.
-        params (dict): Dictionary containing parameter names with their values.
-        eval_function (callable): Function to evaluate predictions, accepting y_pred and y_test.
-        X_train (np.ndarray): Training data features.
-        y_train (np.ndarray): Training data labels.
-        X_test (np.ndarray): Test data features.
-        y_test (np.ndarray): Test data labels.
-
-    Returns:
-        EvaluationResults: Evaluated score of the trained model.
-    """
-    model = model(**params)
-
-    # Train the model with current parameters
-    model.fit(X_train, y_train)
-
-    # Predict on the test set
-    y_pred = model.predict(X_test)
-
-    # Evaluate the predictions
-    score = eval_function(y_pred, y_test)
-
-    return score
+from evaluation.AbstractEvaluationResults import AbstractEvaluationResults
+from models.AbstractModel import AbstractHyperparams, AbstractModel
+from utils.cartesian_product import cartesian_product
 
 
 def hyperparameter_tuning(
-    model_class: Type,
+    model_class: Type[AbstractModel],
+    hyperparams_class: Type[AbstractHyperparams],
+    eval_function: Callable[[np.ndarray, np.ndarray], AbstractEvaluationResults],
     param_grid: Dict[str, List[Any]],
-    eval_function: Callable[[np.ndarray, np.ndarray], float],
     X_train: np.ndarray,
     y_train: np.ndarray,
     X_test: np.ndarray,
     y_test: np.ndarray,
-    hyperparams_dataclass: Type[ModelHyperparams],
-) -> ModelHyperparams:
+) -> Tuple[AbstractModel, AbstractHyperparams, AbstractEvaluationResults]:
     """
     Performs hyperparameter tuning using Cartesian product of parameter values.
 
@@ -87,66 +34,62 @@ def hyperparameter_tuning(
         ModelHyperparams: The best combination of hyperparameters as a dataclass.
     """
 
-    best_score = None
-    best_params = None
+    best_results = None
+    best_hyperparams = None
+    best_model = None
 
     param_combinations = cartesian_product(param_grid)
 
-    for i, params in enumerate(param_combinations):
-        score = eval_model(
-            model=model_class,
-            params=params,
-            eval_function=eval_function,
-            X_train=X_train,
-            y_train=y_train,
-            X_test=X_test,
-            y_test=y_test,
-        )
+    for i, params_data in enumerate(param_combinations):
+        hyperparams = hyperparams_class(**params_data)
+        model = model_class(hyperparams)
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
+        results = eval_function(y_pred, y_test)
 
-        # Do przerobienia. Dorobić komparator
-        if not best_score or score < best_score:
-            best_score = score
-            best_params = params
+        if not best_results or results < best_results:
+            best_results = results
+            best_hyperparams = hyperparams
+            best_model = model
 
         print(f"Evaluated {((i / len(param_combinations)) * 100):.2f}% of the params.")
 
-    return hyperparams_dataclass(**best_params)
+    return best_model, best_hyperparams, best_results
 
 
 if __name__ == "__main__":
 
-    def test_hyperparameter_tuning():
-        from parameters.model_hyperparameters import XGBoostHyperparams
+    from sklearn.metrics import mean_squared_error
 
-        def eval_function(y_pred, y_test):
-            return mean_squared_error(y_test, y_pred)
+    from models.price_evaluator_xgboost_regression import (
+        PriceRegressorXGBoostModel,
+        PriceRegressorXGBoostModelHyperparams,
+    )
 
-        param_grid = {
-            "learning_rate": [0.01, 0.1, 0.2],
-            "max_depth": [3, 5, 7],
-            "n_estimators": [50, 100, 200],
-            "min_child_weight": [1, 3, 5],
-            "gamma": [0, 0.1, 0.2],
-            "subsample": [0.8, 1.0],
-            "colsample_bytree": [0.8, 1.0],
-            "reg_alpha": [0, 0.01, 0.1, 1.0],
-            "reg_lambda": [0, 1.0, 2.0, 5.0],
-        }
+    param_grid = {
+        "learning_rate": [0.01, 0.1, 0.2],
+        "max_depth": [3, 5, 7],
+        "n_estimators": [50, 100, 200],
+        "min_child_weight": [1, 3, 5],
+        "gamma": [0, 0.1, 0.2],
+        "subsample": [0.8, 1.0],
+        "colsample_bytree": [0.8, 1.0],
+        "reg_alpha": [0, 0.01, 0.1, 1.0],
+        "reg_lambda": [0, 1.0, 2.0, 5.0],
+    }
 
-        X_train, X_test = np.random.rand(100, 10), np.random.rand(20, 10)
-        y_train, y_test = np.random.rand(100), np.random.rand(20)
+    X_train, X_test = np.random.rand(100, 10), np.random.rand(20, 10)
+    y_train, y_test = np.random.rand(100), np.random.rand(20)
 
-        best_hyperparams = hyperparameter_tuning(
-            model_class=xgb.XGBRegressor,
-            param_grid=param_grid,
-            eval_function=eval_function,
-            X_train=X_train,
-            y_train=y_train,
-            X_test=X_test,
-            y_test=y_test,
-            hyperparams_dataclass=XGBoostHyperparams,
-        )
+    best_hyperparams = hyperparameter_tuning(
+        model_class=PriceRegressorXGBoostModel,
+        hyperparams_dataclass=PriceRegressorXGBoostModelHyperparams,
+        param_grid=param_grid,
+        eval_function=mean_squared_error,
+        X_train=X_train,
+        y_train=y_train,
+        X_test=X_test,
+        y_test=y_test,
+    )
 
-        print(best_hyperparams)
-
-    test_hyperparameter_tuning()
+    print(best_hyperparams)
