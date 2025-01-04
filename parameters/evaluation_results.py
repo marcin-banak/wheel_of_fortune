@@ -28,7 +28,12 @@ class ClassificationEvaluationResults(EvaluationResults):
 
         :returns: The weighted sum of classification metrics.
         """
-        return self.f1 * 0.4 + self.accuracy * 0.3 + self.precision * 0.2 + self.recall * 0.1
+        return (
+            self.f1 * 0.4
+            + self.accuracy * 0.3
+            + self.precision * 0.2
+            + self.recall * 0.1
+        )
 
     def __gt__(self, other) -> bool:
         """
