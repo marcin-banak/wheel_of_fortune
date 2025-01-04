@@ -175,3 +175,6 @@ cython_debug/
 # Ignore the data folder
 data/processed_car_sale_ads.csv
 data/Car_sale_ads.csv
+
+# Ignore trained models folder
+trained_models

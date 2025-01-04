@@ -15,3 +15,11 @@ class AbstractModel(ABC):
     @abstractmethod
     def eval(self, y_pred: np.ndarray, y_test: np.ndarray) -> AbstractEvaluationResults:
         NotImplementedError
+
+    @abstractmethod
+    def save_model(self, filename: str):
+        NotImplementedError
+
+    @abstractmethod
+    def load_model(self, filename: str):
+        NotImplementedError
