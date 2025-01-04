@@ -18,6 +18,7 @@ def save_model(model: AbstractModel, filename: str):
     with open(EXPORT_DIR / f"{filename}.pkl", "wb") as f:
         pickle.dump(model, f)
 
+
 def load_model(filename: str) -> AbstractModel:
     """Loads model from pickle file
 
