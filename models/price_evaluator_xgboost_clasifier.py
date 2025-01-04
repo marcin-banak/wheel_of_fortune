@@ -3,7 +3,9 @@ from dataclasses import asdict, dataclass
 from xgboost import XGBClassifier
 
 from models.AbstractModel import AbstractHyperparams, AbstractModel
+from evaluation.evaluate_classification import evaluate_classification, ClassificationEvaluationResults
 
+import numpy as np
 
 @dataclass
 class PriceClassifierXGBoostModelHyperparams(AbstractHyperparams):
@@ -28,3 +30,6 @@ class PriceClassifierXGBoostModel(XGBClassifier, AbstractModel):
         super().__init__(
             **asdict(params), eval_metric="logloss", enable_categorical=True, device="cuda"
         )
+
+    def eval(self, y_pred: np.ndarray, y_test: np.ndarray) -> ClassificationEvaluationResults:
+        return evaluate_classification(y_pred, y_test)

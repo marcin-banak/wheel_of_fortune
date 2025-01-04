@@ -2,8 +2,9 @@ from dataclasses import asdict, dataclass
 from typing import Optional, Union
 
 import numpy as np
-from sklearn.metrics import accuracy_score
 from sklearn.tree import DecisionTreeClassifier
+from evaluation.evaluate_classification import evaluate_classification, ClassificationEvaluationResults
+
 
 from models.AbstractModel import AbstractHyperparams, AbstractModel
 
@@ -32,3 +33,6 @@ class PriceClassifierBasicModel(DecisionTreeClassifier, AbstractModel):
     def __init__(self, params: DecisionTreeHyperparams):
         self.params = params
         super().__init__(**asdict(params))
+
+    def eval(self, y_pred: np.ndarray, y_test: np.ndarray) -> ClassificationEvaluationResults:
+        return evaluate_classification(y_pred, y_test)

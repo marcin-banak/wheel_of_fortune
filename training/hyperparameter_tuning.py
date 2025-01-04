@@ -10,13 +10,12 @@ from utils.cartesian_product import cartesian_product
 def hyperparameter_tuning(
     model_class: Type[AbstractModel],
     hyperparams_class: Type[AbstractHyperparams],
-    eval_function: Callable[[np.ndarray, np.ndarray], AbstractEvaluationResults],
     param_grid: Dict[str, List[Any]],
     X_train: np.ndarray,
     y_train: np.ndarray,
     X_test: np.ndarray,
     y_test: np.ndarray,
-) -> Tuple[AbstractModel, AbstractHyperparams, AbstractEvaluationResults]:
+) -> AbstractModel:
     """
     Performs hyperparameter tuning using Cartesian product of parameter values.
 
@@ -35,7 +34,6 @@ def hyperparameter_tuning(
     """
 
     best_results = None
-    best_hyperparams = None
     best_model = None
 
     param_combinations = cartesian_product(param_grid)
@@ -45,16 +43,15 @@ def hyperparameter_tuning(
         model = model_class(hyperparams)
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
-        results = eval_function(y_pred, y_test)
+        results = model.eval(y_pred, y_test)
 
         if not best_results or results < best_results:
             best_results = results
-            best_hyperparams = hyperparams
             best_model = model
 
         print(f"Evaluated {((i / len(param_combinations)) * 100):.2f}% of the params.")
 
-    return best_model, best_hyperparams, best_results
+    return best_model
 
 
 if __name__ == "__main__":

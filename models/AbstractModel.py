@@ -1,11 +1,17 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-
-
-class AbstractModel(ABC):
-    pass
+from evaluation import AbstractEvaluationResults
+import numpy as np
 
 
 @dataclass
 class AbstractHyperparams:
     pass
+
+
+class AbstractModel(ABC):
+    params: AbstractHyperparams
+
+    @abstractmethod
+    def eval(self, y_pred: np.ndarray, y_test: np.ndarray) -> AbstractEvaluationResults:
+        NotImplementedError
