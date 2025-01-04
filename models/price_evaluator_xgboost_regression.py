@@ -2,7 +2,10 @@ from dataclasses import asdict, dataclass
 
 import numpy as np
 from xgboost import XGBRegressor
-from evaluation.evaluate_regression import evaluate_regression, RegressionEvaluationResults
+from evaluation.evaluate_regression import (
+    evaluate_regression,
+    RegressionEvaluationResults,
+)
 
 from models.AbstractModel import AbstractHyperparams, AbstractModel
 
@@ -29,5 +32,7 @@ class PriceRegressorXGBoostModel(XGBRegressor, AbstractModel):
         self.params = params
         super().__init__(**asdict(params))
 
-    def eval(self, y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
+    def eval(
+        self, y_pred: np.ndarray, y_test: np.ndarray
+    ) -> RegressionEvaluationResults:
         return evaluate_regression(y_pred, y_test)
