@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 from dataclasses import dataclass
 from typing import List, Tuple
 
@@ -6,40 +9,31 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_sc
 
 from evaluation.AbstractEvaluationResults import AbstractEvaluationResults
 
+from utils.calculate_ideal_distance import calculate_ideal_distance
+from dataclasses import dataclass
+import numpy as np
 
 @dataclass
 class ClassificationEvaluationResults(AbstractEvaluationResults):
-    """
-    Class to store and evaluate classification results.
-    """
-
     accuracy: float
     precision: float
     recall: float
     f1: float
 
-    def cost_function(self) -> float:
-        """
-        Computes a weighted cost function for classification metrics.
-        Higher scores indicate a better model.
-
-        :returns: The weighted sum of classification metrics.
-        """
-        return self.f1 * 0.4 + self.accuracy * 0.3 + self.precision * 0.2 + self.recall * 0.1
-
-    def __gt__(self, other) -> bool:
-        """
-        Compares two ClassificationEvaluationResults objects using the cost function.
-
-        other: Another ClassificationEvaluationResults object to compare with.
-        :returns: True if the current object has a higher cost function score, False otherwise.
-        """
-        if not isinstance(other, ClassificationEvaluationResults):
-            raise TypeError(
-                "Comparison is only supported between ClassificationEvaluationResults objects."
-            )
-
-        return self.cost_function() > other.cost_function()
+    def __gt__(self, other: ClassificationEvaluationResults) -> bool:
+        distance = calculate_ideal_distance([
+            self.accuracy,
+            self.precision,
+            self.recall,
+            self.f1
+        ])
+        other_distance = calculate_ideal_distance([
+            other.accuracy,
+            other.precision,
+            other.recall,
+            other.f1
+        ])
+        return distance < other_distance
 
 
 def evaluate_classification(
