@@ -13,6 +13,7 @@ from utils.calculate_ideal_distance import calculate_ideal_distance
 from dataclasses import dataclass
 import numpy as np
 
+
 @dataclass
 class ClassificationEvaluationResults(AbstractEvaluationResults):
     accuracy: float
@@ -21,18 +22,12 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
     f1: float
 
     def __gt__(self, other: ClassificationEvaluationResults) -> bool:
-        distance = calculate_ideal_distance([
-            self.accuracy,
-            self.precision,
-            self.recall,
-            self.f1
-        ])
-        other_distance = calculate_ideal_distance([
-            other.accuracy,
-            other.precision,
-            other.recall,
-            other.f1
-        ])
+        distance = calculate_ideal_distance(
+            [self.accuracy, self.precision, self.recall, self.f1]
+        )
+        other_distance = calculate_ideal_distance(
+            [other.accuracy, other.precision, other.recall, other.f1]
+        )
         return distance < other_distance
 
 
