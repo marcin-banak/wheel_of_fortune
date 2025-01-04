@@ -17,7 +17,7 @@ def generate_price_intervals(
 
     intervals = []
     start = A
-    x = 0 
+    x = 0
 
     while start < B:
         length = int(interval_len_func(x))
