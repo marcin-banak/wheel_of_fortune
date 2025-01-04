@@ -30,7 +30,11 @@ class PriceRegressorXGBoostModel(XGBRegressor, AbstractModel):
 
     def __init__(self, params: PriceRegressorXGBoostModelHyperparams):
         self.params = params
-        super().__init__(**asdict(params))
+        super().__init__(
+            **asdict(params),
+            enable_categorical=True,
+            device="cuda"
+        )
 
     def eval(
         self, y_pred: np.ndarray, y_test: np.ndarray

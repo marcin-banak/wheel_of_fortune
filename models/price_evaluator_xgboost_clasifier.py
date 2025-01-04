@@ -33,7 +33,8 @@ class PriceClassifierXGBoostModel(XGBClassifier, AbstractModel):
         self.params = params
         super().__init__(
             **asdict(params),
-            eval_metric="logloss",
+            eval_metric="auc",
+            tree_method="hist",
             enable_categorical=True,
             device="cuda"
         )

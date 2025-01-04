@@ -1,8 +1,9 @@
+from typing import Callable
 from typing import List, Tuple
 
 
 def generate_price_intervals(
-    A: int, B: int, a: float = 0, b: float = 0, c: float = 1
+    A: int, B: int, interval_len_func: Callable[[float], float]
 ) -> List[Tuple[float, float]]:
     """
     Generates a list of disjoint price intervals from A to B.
@@ -10,18 +11,16 @@ def generate_price_intervals(
 
     :param A: starting value of the range
     :param B: ending value of the range
-    :param a: coefficient of the quadratic term (for x^2)
-    :param b: coefficient of the linear term (for x)
-    :param c: constant term of the quadratic function
+    :param interval_len_func: func that describes changing of intervals length
     :return: list of intervals (tuples) [(start, end), ...]
     """
 
     intervals = []
     start = A
-    x = 0
+    x = 0 
 
     while start < B:
-        length = a * x**2 + b * x + c
+        length = int(interval_len_func(x))
         if length <= 0:
             x += 1
             continue
