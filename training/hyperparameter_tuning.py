@@ -87,7 +87,7 @@ def hyperparameter_tuning(
         ModelHyperparams: The best combination of hyperparameters as a dataclass.
     """
 
-    best_score = float("inf")
+    best_score = None
     best_params = None
 
     param_combinations = cartesian_product(param_grid)
@@ -104,7 +104,7 @@ def hyperparameter_tuning(
         )
 
         # Do przerobienia. Dorobić komparator
-        if score < best_score:
+        if not best_score or score < best_score:
             best_score = score
             best_params = params
 

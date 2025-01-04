@@ -32,6 +32,8 @@ class PriceClassifierXGBoostModel(XGBClassifier):
             use_label_encoder=False,
             eval_metric="logloss",
             enable_categorical=True,
+            tree_method="gpu_hist",
+            device="cuda",
             **kwargs
         )
 
