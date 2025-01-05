@@ -32,10 +32,7 @@ class PriceClassifierXGBoostModel(XGBClassifier, AbstractModel):
     def __init__(self, params: PriceClassifierXGBoostModelHyperparams):
         self.params = params
         super().__init__(
-            **asdict(params),
-            eval_metric="auc",
-            enable_categorical=True,
-            device="cuda"
+            **asdict(params), eval_metric="auc", enable_categorical=True, device="cuda"
         )
 
     def eval(
