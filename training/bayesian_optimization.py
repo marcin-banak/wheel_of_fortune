@@ -1,17 +1,16 @@
-from skopt import gp_minimize
-from skopt.space import Real, Integer, Categorical
-from dataclasses import dataclass
-from dataclasses import fields
-from typing import Type, Callable, Tuple
-import numpy as np
-
 import sys
+from dataclasses import fields
 from pathlib import Path
+from typing import Tuple, Type
+
+import numpy as np
+from skopt import gp_minimize
+from skopt.space import Categorical, Integer, Real
 
 project_root = Path(__file__).resolve().parents[1]
 sys.path.append(str(project_root))
 
-from models.AbstractModel import AbstractModel, AbstractHyperparams
+from models.AbstractModel import AbstractHyperparams, AbstractModel
 
 
 def bayesian_optimization(
@@ -21,7 +20,8 @@ def bayesian_optimization(
     y_train: np.ndarray,
     X_val: np.ndarray,
     y_val: np.ndarray,
-    max_iter: int = 50,
+    max_iter: int = 30,
+    gpu_mode: bool = False,
 ) -> AbstractHyperparams:
     """
     Bayesian optimization for ML Model.
@@ -63,15 +63,14 @@ def bayesian_optimization(
         params = {dim.name: param_values[i] for i, dim in enumerate(dimensions)}
 
         hyperparams = hyperparam_class(**params)
-        model = model_class(hyperparams)
+        print(f"Eval for {hyperparams}")
+        model = model_class(hyperparams, gpu_mode)
 
         model.fit(X_train, y_train)
-        y_pred = model.predict(X_val)
-        evaluation_results = model.eval(y_pred, y_val)
+        evaluation_results = model.score(X_val, y_val)
+        print(f"{evaluation_results}")
 
-        return -evaluation_results.get_score()
-
-    print("Started optimization.")
+        return -evaluation_results.ideal_distance
 
     dimensions = create_param_space()
 

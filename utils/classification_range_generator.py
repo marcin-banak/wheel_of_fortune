@@ -1,5 +1,4 @@
-from typing import Callable
-from typing import List, Tuple
+from typing import Callable, List, Tuple
 
 
 def generate_price_intervals(

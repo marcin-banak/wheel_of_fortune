@@ -1,9 +1,10 @@
-from models.AbstractModel import AbstractModel, AbstractHyperparams
 import json
+import pickle
 from dataclasses import asdict
 from pathlib import Path
 from typing import Type
-import pickle
+
+from models.AbstractModel import AbstractHyperparams, AbstractModel
 
 EXPORT_DIR = Path(__file__).parent.parent / "trained_models"
 
@@ -14,6 +15,8 @@ def save_model(model: AbstractModel, filename: str):
     :param model: Model to export
     :param filename: Name of model file
     """
+
+    EXPORT_DIR.mkdir(exist_ok=True, parents=True)
 
     with open(EXPORT_DIR / f"{filename}.pkl", "wb") as f:
         pickle.dump(model, f)

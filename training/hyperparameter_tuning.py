@@ -1,8 +1,7 @@
-from typing import Any, Callable, Dict, List, Tuple, Type
+from typing import Any, Dict, List, Type
 
 import numpy as np
 
-from evaluation.AbstractEvaluationResults import AbstractEvaluationResults
 from models.AbstractModel import AbstractHyperparams, AbstractModel
 from utils.cartesian_product import cartesian_product
 
@@ -15,6 +14,7 @@ def hyperparameter_tuning(
     y_train: np.ndarray,
     X_test: np.ndarray,
     y_test: np.ndarray,
+    gpu_mode: bool = False,
 ) -> AbstractModel:
     """
     Performs hyperparameter tuning using Cartesian product of parameter values.
@@ -40,10 +40,9 @@ def hyperparameter_tuning(
 
     for i, params_data in enumerate(param_combinations):
         hyperparams = hyperparams_class(**params_data)
-        model = model_class(hyperparams)
+        model = model_class(hyperparams, gpu_mode)
         model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
-        results = model.eval(y_pred, y_test)
+        results = model.score(X_test, y_test)
 
         if not best_results or results < best_results:
             best_results = results
