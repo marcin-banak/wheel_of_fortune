@@ -1,7 +1,9 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 
 @dataclass
 class AbstractEvaluationResults(ABC):
-    pass
+    @abstractmethod
+    def get_score(self):
+        pass
