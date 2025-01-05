@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from dataclasses import dataclass
 from typing import List, Tuple
 
@@ -8,10 +7,7 @@ import numpy as np
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
 from evaluation.AbstractEvaluationResults import AbstractEvaluationResults
-
 from utils.calculate_ideal_distance import calculate_ideal_distance
-from dataclasses import dataclass
-import numpy as np
 
 
 @dataclass
@@ -36,12 +32,7 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
         )
 
     def get_score(self):
-        return (
-            0.4 * self.accuracy
-            + 0.35 * self.precision
-            + 0.15 * self.recall
-            + 0.1 * self.f1
-        )
+        return 0.4 * self.accuracy + 0.35 * self.precision + 0.15 * self.recall + 0.1 * self.f1
 
     def __gt__(self, other: ClassificationEvaluationResults) -> bool:
         if not isinstance(other, ClassificationEvaluationResults):

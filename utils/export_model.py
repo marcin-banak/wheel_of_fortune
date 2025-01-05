@@ -1,9 +1,10 @@
-from models.AbstractModel import AbstractModel, AbstractHyperparams
 import json
+import pickle
 from dataclasses import asdict
 from pathlib import Path
 from typing import Type
-import pickle
+
+from models.AbstractModel import AbstractHyperparams, AbstractModel
 
 EXPORT_DIR = Path(__file__).parent.parent / "trained_models"
 

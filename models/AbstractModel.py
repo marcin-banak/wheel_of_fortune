@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from evaluation import AbstractEvaluationResults
+from typing import Dict
+
 import numpy as np
-from typing import List, Tuple
 import plotly.graph_objects as go
+
+from evaluation import AbstractEvaluationResults
 
 
 @dataclass
@@ -14,15 +16,11 @@ class AbstractHyperparams:
 class AbstractModel(ABC):
     hyperparams: AbstractHyperparams
 
-    def score(
-        self, X_test: np.ndarray, y_test: np.ndarray
-    ) -> AbstractEvaluationResults:
+    def score(self, X_test: np.ndarray, y_test: np.ndarray) -> AbstractEvaluationResults:
         return self.eval(self.predict(X_test), y_test)
 
     def feature_importance(self):
-        parameters, values = zip(
-            *sorted(self._feature_importance(), key=lambda x: x[1])
-        )
+        parameters, values = zip(*sorted(self._feature_importance().items(), key=lambda x: x[1]))
         fig = go.Figure(data=go.Bar(x=values, y=parameters, orientation="h"))
         fig.update_layout(
             xaxis_title="Weight",
@@ -43,5 +41,5 @@ class AbstractModel(ABC):
         NotImplementedError
 
     @abstractmethod
-    def _feature_importance(self) -> List[Tuple[str, float]]:
+    def _feature_importance(self) -> Dict[str, float]:
         NotImplementedError

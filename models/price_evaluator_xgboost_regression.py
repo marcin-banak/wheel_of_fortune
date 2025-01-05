@@ -1,14 +1,11 @@
-from dataclasses import asdict, field, dataclass
+from dataclasses import asdict, dataclass, field
+from typing import Dict
 
 import numpy as np
 from xgboost import XGBRegressor
-from evaluation.evaluate_regression import (
-    evaluate_regression,
-    RegressionEvaluationResults,
-)
 
+from evaluation.evaluate_regression import RegressionEvaluationResults, evaluate_regression
 from models.AbstractModel import AbstractHyperparams, AbstractModel
-from typing import List, Tuple
 
 
 @dataclass
@@ -22,6 +19,15 @@ class PriceRegressorXGBoostModelHyperparams(AbstractHyperparams):
     gamma: float = field(metadata={"space": (0.0, 5.0), "type": "float"})
     subsample: float = field(metadata={"space": (0.5, 1.0), "type": "float"})
     colsample_bytree: float = field(metadata={"space": (0.5, 1.0), "type": "float"})
+    max_delta_step: float = field(metadata={"space": (0.0, 10.0), "type": "float"})
+    colsample_bynode: float = field(metadata={"space": (0.5, 1.0), "type": "float"})
+    colsample_bylevel: float = field(metadata={"space": (0.5, 1.0), "type": "float"})
+    objective: str = field(
+        metadata={
+            "space": ("reg:squarederror", "reg:squaredlogerror", "reg:gamma", "reg:tweedie"),
+            "type": "categorical",
+        }
+    )
 
 
 class PriceRegressorXGBoostModel(AbstractModel):
@@ -29,15 +35,19 @@ class PriceRegressorXGBoostModel(AbstractModel):
     A custom regressor model based on XGBoost for price regression tasks.
     """
 
-    def __init__(self, hyperparams: PriceRegressorXGBoostModelHyperparams):
+    CPU_RUN_PARAMS = {"tree_method": "hist", "n_jobs": -1}
+
+    GPU_RUN_PARAMS = {"tree_method": "gpu_hist", "gpu_id": 0}
+
+    def __init__(self, hyperparams: PriceRegressorXGBoostModelHyperparams, gpu_mode: bool = False):
         self.hyperparams = hyperparams
         self.model = XGBRegressor(
-            **asdict(self.hyperparams), enable_categorical=True, device="cuda"
+            **asdict(self.hyperparams),
+            **(self.GPU_RUN_PARAMS if gpu_mode else self.CPU_RUN_PARAMS),
+            enable_categorical=True,
         )
 
-    def eval(
-        self, y_pred: np.ndarray, y_test: np.ndarray
-    ) -> RegressionEvaluationResults:
+    def eval(self, y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
         return evaluate_regression(y_pred, y_test)
 
     def fit(self, X_train: np.ndarray, y_train: np.ndarray):
@@ -46,5 +56,5 @@ class PriceRegressorXGBoostModel(AbstractModel):
     def predict(self, X_test: np.ndarray) -> np.ndarray:
         return self.model.predict(X_test)
 
-    def _feature_importance(self) -> List[Tuple[str, float]]:
+    def _feature_importance(self) -> Dict[str, float]:
         return self.model.get_booster().get_score(importance_type="weight")
