@@ -21,9 +21,9 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
     precision: float
     recall: float
     f1: float
-    roc_auc: float = None
+    #roc_auc: float = None
 
-    IDEAL_METRICS = {"accuracy": 1.0, "precision": 1.0, "recall": 1.0, "f1": 1.0, "roc_auc": 1.0}
+    IDEAL_METRICS = {"accuracy": 1.0, "precision": 1.0, "recall": 1.0, "f1": 1.0} #"roc_auc": 1.0}
 
     @property
     def ideal_distance(self):
@@ -32,7 +32,7 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
             "precision": self.precision,
             "recall": self.recall,
             "f1": self.f1,
-            "roc_auc": self.roc_auc,
+            #"roc_auc": self.roc_auc,
         }
         return calculate_ideal_distance(self.IDEAL_METRICS, metrics)
 
@@ -92,7 +92,7 @@ def evaluate_classification(
         precision=precision,
         recall=recall,
         f1=f1,
-        roc_auc=roc_auc,
+        #roc_auc=roc_auc,
     )
 
 

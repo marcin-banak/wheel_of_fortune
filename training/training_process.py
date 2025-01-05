@@ -58,9 +58,8 @@ def training_process(
             gpu_mode,
         )
     else:
-        print("Started optimization.")
-
-        best_params = bayesian_optimization(
+        best_model = bayesian_optimization(
+            model_name,
             model_class,
             hyperparameters_class,
             X_train,
@@ -70,11 +69,6 @@ def training_process(
             max_iters,
             gpu_mode,
         )
-
-        print("Hyperparameters found. Training model.")
-
-        best_model = model_class(best_params)
-        best_model.fit(X_train, y_train)
 
     save_model(best_model, model_name)
 
