@@ -16,6 +16,8 @@ def save_model(model: AbstractModel, filename: str):
     :param filename: Name of model file
     """
 
+    EXPORT_DIR.mkdir(exist_ok=True, parents=True)
+
     with open(EXPORT_DIR / f"{filename}.pkl", "wb") as f:
         pickle.dump(model, f)
 
