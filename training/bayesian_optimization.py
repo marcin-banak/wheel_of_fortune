@@ -41,9 +41,7 @@ def bayesian_optimization(
 
         for field in fields(hyperparam_class):
             if not isinstance(field.metadata.get("space"), tuple):
-                raise ValueError(
-                    f"Field '{field.name}' must define 'space' metadata as a tuple."
-                )
+                raise ValueError(f"Field '{field.name}' must define 'space' metadata as a tuple.")
 
             param_range = field.metadata["space"]
             param_type = field.metadata.get("type", "float")
@@ -63,15 +61,13 @@ def bayesian_optimization(
         params = {dim.name: param_values[i] for i, dim in enumerate(dimensions)}
 
         hyperparams = hyperparam_class(**params)
+        print(f"Eval for {hyperparams}")
         model = model_class(hyperparams)
 
         model.fit(X_train, y_train)
-        y_pred = model.predict(X_val)
-        evaluation_results = model.eval(y_pred, y_val)
+        evaluation_results = model.score(X_val, y_val)
 
         return -evaluation_results.get_score()
-
-    print("Started optimization.")
 
     dimensions = create_param_space()
 

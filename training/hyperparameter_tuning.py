@@ -42,8 +42,7 @@ def hyperparameter_tuning(
         hyperparams = hyperparams_class(**params_data)
         model = model_class(hyperparams)
         model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
-        results = model.eval(y_pred, y_test)
+        results = model.score(X_test, y_test)
 
         if not best_results or results < best_results:
             best_results = results

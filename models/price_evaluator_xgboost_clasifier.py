@@ -9,6 +9,7 @@ from evaluation.evaluate_classification import (
 )
 
 import numpy as np
+from typing import List, Tuple
 
 
 @dataclass
@@ -24,21 +25,28 @@ class PriceClassifierXGBoostModelHyperparams(AbstractHyperparams):
     colsample_bytree: float = field(metadata={"space": (0.5, 1.0), "type": "float"})
 
 
-class PriceClassifierXGBoostModel(XGBClassifier, AbstractModel):
+class PriceClassifierXGBoostModel(AbstractModel):
     """
     A custom classifier model based on XGBoost for price classification tasks.
     """
 
-    def __init__(self, params: PriceClassifierXGBoostModelHyperparams):
-        self.params = params
-        super().__init__(
-            **asdict(params),
+    def __init__(self, hyperparams: PriceClassifierXGBoostModelHyperparams):
+        self.hyperparams = hyperparams
+        self.model = XGBClassifier(
+            **asdict(self.hyperparams),
             eval_metric="auc",
             enable_categorical=True,
-            device="cuda"
+            device="cuda",
         )
 
-    def eval(
-        self, y_pred: np.ndarray, y_test: np.ndarray
-    ) -> ClassificationEvaluationResults:
+    def eval(self, y_pred: np.ndarray, y_test: np.ndarray) -> ClassificationEvaluationResults:
         return evaluate_classification(y_pred, y_test)
+
+    def fit(self, X_train: np.ndarray, y_train: np.ndarray):
+        return self.model.fit(X_train, y_train)
+
+    def predict(self, X_test: np.ndarray) -> np.ndarray:
+        return self.model.predict(X_test)
+
+    def _feature_importance(self) -> List[Tuple[str, float]]:
+        return self.model.get_booster().get_score(importance_type="weight")
