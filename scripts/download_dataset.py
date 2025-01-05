@@ -3,7 +3,7 @@ import os
 from kaggle.api.kaggle_api_extended import KaggleApi
 from pathlib import Path
 
-TARGET_DIR =  Path(__file__).parent.parent / "data"
+TARGET_DIR = Path(__file__).parent.parent / "data"
 
 
 def download_kaggle_dataset(dataset):

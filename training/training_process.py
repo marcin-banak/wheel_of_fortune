@@ -44,7 +44,9 @@ def training_process(
         y, intervals = class_reduction(y, intervals)
         [print(f"{int(interval[0])} - {int(interval[1])}") for interval in intervals]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=42
+    )
 
     if param_grid:
         best_model = hyperparameter_tuning(

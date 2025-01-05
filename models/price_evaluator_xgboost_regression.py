@@ -4,7 +4,10 @@ from typing import Dict
 import numpy as np
 from xgboost import XGBRegressor
 
-from evaluation.evaluate_regression import RegressionEvaluationResults, evaluate_regression
+from evaluation.evaluate_regression import (
+    RegressionEvaluationResults,
+    evaluate_regression,
+)
 from models.AbstractModel import AbstractHyperparams, AbstractModel
 
 
@@ -24,7 +27,12 @@ class PriceRegressorXGBoostModelHyperparams(AbstractHyperparams):
     colsample_bylevel: float = field(metadata={"space": (0.5, 1.0), "type": "float"})
     objective: str = field(
         metadata={
-            "space": ("reg:squarederror", "reg:squaredlogerror", "reg:gamma", "reg:tweedie"),
+            "space": (
+                "reg:squarederror",
+                "reg:squaredlogerror",
+                "reg:gamma",
+                "reg:tweedie",
+            ),
             "type": "categorical",
         }
     )
@@ -39,7 +47,9 @@ class PriceRegressorXGBoostModel(AbstractModel):
 
     GPU_RUN_PARAMS = {"tree_method": "gpu_hist", "gpu_id": 0}
 
-    def __init__(self, hyperparams: PriceRegressorXGBoostModelHyperparams, gpu_mode: bool = False):
+    def __init__(
+        self, hyperparams: PriceRegressorXGBoostModelHyperparams, gpu_mode: bool = False
+    ):
         self.hyperparams = hyperparams
         self.model = XGBRegressor(
             **asdict(self.hyperparams),
@@ -47,7 +57,9 @@ class PriceRegressorXGBoostModel(AbstractModel):
             enable_categorical=True,
         )
 
-    def eval(self, y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
+    def eval(
+        self, y_pred: np.ndarray, y_test: np.ndarray
+    ) -> RegressionEvaluationResults:
         return evaluate_regression(y_pred, y_test)
 
     def fit(self, X_train: np.ndarray, y_train: np.ndarray):

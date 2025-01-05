@@ -12,5 +12,7 @@ def calculate_ideal_distance(IDEAL_METRICS: dict, metrics: dict) -> float:
     if set(IDEAL_METRICS.keys()) != set(metrics.keys()):
         raise ValueError("The keys in IDEAL_METRICS and metrics must match.")
 
-    distance = np.sqrt(sum((metrics[key] - IDEAL_METRICS[key]) ** 2 for key in IDEAL_METRICS))
+    distance = np.sqrt(
+        sum((metrics[key] - IDEAL_METRICS[key]) ** 2 for key in IDEAL_METRICS)
+    )
     return distance

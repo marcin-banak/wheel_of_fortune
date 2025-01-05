@@ -37,7 +37,12 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
         return calculate_ideal_distance(self.IDEAL_METRICS, metrics)
 
     def get_score(self):
-        return 0.4 * self.accuracy + 0.35 * self.precision + 0.15 * self.recall + 0.1 * self.f1
+        return (
+            0.4 * self.accuracy
+            + 0.35 * self.precision
+            + 0.15 * self.recall
+            + 0.1 * self.f1
+        )
         score = (
             0.4 * self.accuracy
             + 0.35 * self.precision
@@ -81,7 +86,9 @@ def evaluate_classification(
     if y_pred_proba is not None:
         # Handle binary and multi-class cases
         if len(np.unique(y_test)) > 2:
-            roc_auc = roc_auc_score(y_test, y_pred_proba, multi_class="ovr", average="weighted")
+            roc_auc = roc_auc_score(
+                y_test, y_pred_proba, multi_class="ovr", average="weighted"
+            )
         else:
             roc_auc = roc_auc_score(y_test, y_pred_proba[:, 1])
     else:
