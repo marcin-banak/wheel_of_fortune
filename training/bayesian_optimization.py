@@ -21,7 +21,7 @@ def bayesian_optimization(
     y_train: np.ndarray,
     X_val: np.ndarray,
     y_val: np.ndarray,
-    max_iter: int = 50
+    max_iter: int = 50,
 ) -> AbstractHyperparams:
     """
     Bayesian optimization for ML Model.
@@ -35,16 +35,19 @@ def bayesian_optimization(
     :param max_iter: Maximal optimization iterations.
     :return: Optimal hiperparameter class.
     """
+
     def create_param_space():
         dimensions = []
 
         for field in fields(hyperparam_class):
             if not isinstance(field.metadata.get("space"), tuple):
-                raise ValueError(f"Field '{field.name}' must define 'space' metadata as a tuple.")
-            
+                raise ValueError(
+                    f"Field '{field.name}' must define 'space' metadata as a tuple."
+                )
+
             param_range = field.metadata["space"]
             param_type = field.metadata.get("type", "float")
-            
+
             if param_type == "float":
                 dimensions.append(Real(*param_range, name=field.name))
             elif param_type == "int":
@@ -55,10 +58,10 @@ def bayesian_optimization(
                 raise ValueError(f"Unsupported parameter type: {param_type}")
 
         return dimensions
-    
+
     def objective_function(param_values: Tuple):
         params = {dim.name: param_values[i] for i, dim in enumerate(dimensions)}
-        
+
         hyperparams = hyperparam_class(**params)
         model = model_class(hyperparams)
 
@@ -76,7 +79,7 @@ def bayesian_optimization(
         func=objective_function,
         dimensions=dimensions,
         n_calls=max_iter,
-        random_state=42
+        random_state=42,
     )
 
     best_params = {dim.name: result.x[i] for i, dim in enumerate(dimensions)}
@@ -85,15 +88,16 @@ def bayesian_optimization(
 
 
 if __name__ == "__main__":
+
     def test_bayesian_optimization():
         from models.price_evaluator_xgboost_clasifier import (
             PriceClassifierXGBoostModel,
-            PriceClassifierXGBoostModelHyperparams
+            PriceClassifierXGBoostModelHyperparams,
         )
-        
-        X_train = np.random.rand(100, 10)  
+
+        X_train = np.random.rand(100, 10)
         y_train = np.random.randint(0, 3, 100)
-        X_val = np.random.rand(30, 10)  
+        X_val = np.random.rand(30, 10)
         y_val = np.random.randint(0, 3, 30)
 
         best_hyperparams = bayesian_optimization(
@@ -103,7 +107,7 @@ if __name__ == "__main__":
             y_train=y_train,
             X_val=X_val,
             y_val=y_val,
-            max_iter=11
+            max_iter=11,
         )
 
         print(best_hyperparams)

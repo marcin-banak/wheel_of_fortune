@@ -22,7 +22,12 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
     f1: float
 
     def get_score(self):
-        return 0.4*self.accuracy + 0.35*self.precision + 0.15*self.recall + 0.1*self.f1
+        return (
+            0.4 * self.accuracy
+            + 0.35 * self.precision
+            + 0.15 * self.recall
+            + 0.1 * self.f1
+        )
 
     def __gt__(self, other: ClassificationEvaluationResults) -> bool:
         distance = calculate_ideal_distance(
