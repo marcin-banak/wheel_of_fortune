@@ -56,7 +56,11 @@ class PriceClassifierXGBoostModel(AbstractModel):
 
     GPU_RUN_PARAMS = {"tree_method": "gpu_hist", "gpu_id": 0}
 
-    def __init__(self, hyperparams: PriceClassifierXGBoostModelHyperparams, gpu_mode: bool = False):
+    def __init__(
+        self,
+        hyperparams: PriceClassifierXGBoostModelHyperparams,
+        gpu_mode: bool = False,
+    ):
         self.hyperparams = hyperparams
         self.model = XGBClassifier(
             **asdict(self.hyperparams),
@@ -65,7 +69,9 @@ class PriceClassifierXGBoostModel(AbstractModel):
             enable_categorical=True,
         )
 
-    def eval(self, y_pred: np.ndarray, y_test: np.ndarray) -> ClassificationEvaluationResults:
+    def eval(
+        self, y_pred: np.ndarray, y_test: np.ndarray
+    ) -> ClassificationEvaluationResults:
         return evaluate_classification(y_pred, y_test)
 
     def fit(self, X_train: np.ndarray, y_train: np.ndarray):

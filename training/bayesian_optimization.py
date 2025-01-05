@@ -41,7 +41,9 @@ def bayesian_optimization(
 
         for field in fields(hyperparam_class):
             if not isinstance(field.metadata.get("space"), tuple):
-                raise ValueError(f"Field '{field.name}' must define 'space' metadata as a tuple.")
+                raise ValueError(
+                    f"Field '{field.name}' must define 'space' metadata as a tuple."
+                )
 
             param_range = field.metadata["space"]
             param_type = field.metadata.get("type", "float")
