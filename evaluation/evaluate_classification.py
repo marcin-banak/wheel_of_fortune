@@ -21,22 +21,29 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
     recall: float
     f1: float
 
-    def get_score(self):
-        return (
-            0.4 * self.accuracy
-            + 0.35 * self.precision
-            + 0.15 * self.recall
-            + 0.1 * self.f1
+    IDEAL_METRICS = {"accuracy": 1.0, "precision": 1.0, "recall": 1.0, "f1": 1.0}
+
+    @property
+    def ideal_distance(self):
+        return calculate_ideal_distance(
+            self.IDEAL_METRICS,
+            {
+                "accuracy": self.accuracy,
+                "precision": self.precision,
+                "recall": self.recall,
+                "f1": self.f1,
+            },
         )
 
+    def get_score(self):
+        return 0.4 * self.accuracy + 0.35 * self.precision + 0.15 * self.recall + 0.1 * self.f1
+
     def __gt__(self, other: ClassificationEvaluationResults) -> bool:
-        distance = calculate_ideal_distance(
-            [self.accuracy, self.precision, self.recall, self.f1]
-        )
-        other_distance = calculate_ideal_distance(
-            [other.accuracy, other.precision, other.recall, other.f1]
-        )
-        return distance < other_distance
+        if not isinstance(other, ClassificationEvaluationResults):
+            raise TypeError(
+                "Comparison is only supported between ClassificationEvaluationResults objects."
+            )
+        return self.ideal_distance < other.ideal_distance
 
 
 def evaluate_classification(
@@ -74,12 +81,9 @@ def values_to_class_labels(
     """
     Assigns values to class labels based on unique intervals.
 
-    Args:
-        values: Array of numerical values to be assigned.
-        standard_intervals: Array of unique intervals in the form [(low1, high1), (low2, high2), ...].
-
-    Returns:
-        np.ndarray: Array of class labels corresponding to the intervals or -1 for values out of range.
+    values: Array of numerical values to be assigned.
+    standard_intervals: Array of unique intervals in the form [(low1, high1), (low2, high2), ...].
+    :returns: Array of class labels corresponding to the intervals or -1 for values out of range.
     """
     labels = []
     for v in values:

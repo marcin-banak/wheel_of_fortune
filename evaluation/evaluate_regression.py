@@ -5,6 +5,7 @@ import numpy as np
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 from evaluation.AbstractEvaluationResults import AbstractEvaluationResults
+from utils.calculate_ideal_distance import calculate_ideal_distance
 
 
 @dataclass
@@ -19,32 +20,28 @@ class RegressionEvaluationResults(AbstractEvaluationResults):
     r2: float
     mape: float
 
-    def cost_function(self) -> float:
-        """
-        Computes a weighted cost function for regression metrics.
-        Lower scores indicate a better model.
+    IDEAL_METRICS = {"mae": 0.0, "rmse": 0.0, "r2": 1.0, "mape": 0.0}
 
-        :returns: The weighted sum of regression metrics.
-        """
+    @property
+    def ideal_distance(self):
+        return calculate_ideal_distance(
+            self.IDEAL_METRICS,
+            {"mae": self.mae, "rmse": self.rmse, "r2": self.r2, "mape": self.mape},
+        )
+
+    def get_score(self) -> float:
         return self.mae * 0.4 + self.rmse * 0.3 + self.mape * 0.2 + self.r2 * -0.2
 
     def __gt__(self, other) -> bool:
-        """
-        Compares two RegressionEvaluationResults objects using the cost function.
-
-        other : Another RegressionEvaluationResults object to compare with.
-        :returns: True if the current object has a lower cost function score, False otherwise.
-        """
         if not isinstance(other, RegressionEvaluationResults):
             raise TypeError(
                 "Comparison is only supported between RegressionEvaluationResults objects."
             )
-        return self.cost_function() < other.cost_function()
+
+        return self.ideal_distance < other.ideal_distance
 
 
-def evaluate_regression(
-    y_pred: np.ndarray, y_test: np.ndarray
-) -> RegressionEvaluationResults:
+def evaluate_regression(y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
     """
     Calculates regression metrics for the given predicted and actual values.
 

@@ -32,7 +32,5 @@ class PriceRegressorXGBoostModel(XGBRegressor, AbstractModel):
         self.params = params
         super().__init__(**asdict(params), enable_categorical=True, device="cuda")
 
-    def eval(
-        self, y_pred: np.ndarray, y_test: np.ndarray
-    ) -> RegressionEvaluationResults:
+    def eval(self, y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
         return evaluate_regression(y_pred, y_test)

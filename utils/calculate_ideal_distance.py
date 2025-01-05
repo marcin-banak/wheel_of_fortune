@@ -1,12 +1,16 @@
 import numpy as np
 
 
-IDEAL_METRICS = {"accuracy": 1.0, "precision": 1.0, "recall": 1.0, "f1_score": 1.0}
+def calculate_ideal_distance(IDEAL_METRICS: dict, metrics: dict) -> float:
+    """
+    Calculate distance from ideal metrics for each key in the dictionaries.
 
+    IDEAL_METRICS: Dictionary of ideal metric values.
+    metrics: Dictionary of actual metric values.
+    :returns: Euclidean distance between actual metrics and ideal metrics.
+    """
+    if set(IDEAL_METRICS.keys()) != set(metrics.keys()):
+        raise ValueError("The keys in IDEAL_METRICS and metrics must match.")
 
-def calculate_ideal_distance(metrics) -> float:
-    """Calculate distance from ideal for every metric and sum up"""
-
-    ideal_metrics = list(IDEAL_METRICS.values())
-    distance = np.sqrt(np.sum((np.array(metrics) - np.array(ideal_metrics)) ** 2))
+    distance = np.sqrt(sum((metrics[key] - IDEAL_METRICS[key]) ** 2 for key in IDEAL_METRICS))
     return distance
