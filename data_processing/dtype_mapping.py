@@ -3,9 +3,7 @@ import pandas as pd
 
 def dtype_mapping(data: pd.DataFrame) -> pd.DataFrame:
     dtype_mapping = {
-        "Index": "Int64",
         "Price": "Int64",
-        "Currency": "category",
         "Condition": "category",
         "Vehicle_brand": "category",
         "Vehicle_model": "category",
@@ -21,7 +19,6 @@ def dtype_mapping(data: pd.DataFrame) -> pd.DataFrame:
         "Colour": "category",
         "First_owner": "boolean",
         "Vehicle_generation": "category",
-        "Offer_publication_date": "category",
         "Advanced_model": "category",
     }
 

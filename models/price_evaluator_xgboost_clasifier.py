@@ -34,7 +34,6 @@ class PriceClassifierXGBoostModel(XGBClassifier, AbstractModel):
         super().__init__(
             **asdict(params),
             eval_metric="auc",
-            tree_method="hist",
             enable_categorical=True,
             device="cuda"
         )
