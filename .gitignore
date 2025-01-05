@@ -178,3 +178,5 @@ data/Car_sale_ads.csv
 
 # Ignore trained models folder
 trained_models
+
+.idea
