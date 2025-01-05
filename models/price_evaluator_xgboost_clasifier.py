@@ -39,7 +39,9 @@ class PriceClassifierXGBoostModel(AbstractModel):
             device="cuda",
         )
 
-    def eval(self, y_pred: np.ndarray, y_test: np.ndarray) -> ClassificationEvaluationResults:
+    def eval(
+        self, y_pred: np.ndarray, y_test: np.ndarray
+    ) -> ClassificationEvaluationResults:
         return evaluate_classification(y_pred, y_test)
 
     def fit(self, X_train: np.ndarray, y_train: np.ndarray):
