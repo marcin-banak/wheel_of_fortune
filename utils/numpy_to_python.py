@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def numpy_to_python(obj):
     if isinstance(obj, np.integer):
         return int(obj)

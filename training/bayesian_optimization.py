@@ -87,7 +87,9 @@ def bayesian_optimization(
             best_model = model
 
             with open(EXPORT_DIR / f"{model_name}.json", "w") as f:
-                json.dump(asdict(best_model.hyperparams), f, indent=4, default=numpy_to_python)
+                json.dump(
+                    asdict(best_model.hyperparams), f, indent=4, default=numpy_to_python
+                )
 
         print(f"Best score: {best_score}")
         print(f"Best score hyperparams: {best_model.hyperparams}")
