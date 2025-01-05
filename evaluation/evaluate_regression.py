@@ -41,9 +41,7 @@ class RegressionEvaluationResults(AbstractEvaluationResults):
         return self.ideal_distance < other.ideal_distance
 
 
-def evaluate_regression(
-    y_pred: np.ndarray, y_test: np.ndarray
-) -> RegressionEvaluationResults:
+def evaluate_regression(y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
     """
     Calculates regression metrics for the given predicted and actual values.
 
@@ -54,12 +52,9 @@ def evaluate_regression(
         - R2: Coefficient of Determination
         - MAPE: Mean Absolute Percentage Error
 
-    Args:
-        y_pred: Predicted values.
-        y_test: Actual values.
-
-    Returns:
-        RegressionEvaluationResults: Results containing the computed regression metrics.
+    y_pred: Predicted values.
+    y_test: Actual values.
+    :returns: Results containing the computed regression metrics.
     """
     mae = mean_absolute_error(y_test, y_pred)
     mse = mean_squared_error(y_test, y_pred)
@@ -76,12 +71,9 @@ def labels_to_midpoints(
     """
     Converts an array of labels of intervals (min, max) to an array of midpoint values.
 
-    Args:
-        labels: Array of labels representing indices of standard intervals.
-        standard_intervals: List of predefined intervals, where each interval is a tuple (min, max).
-
-    Returns:
-        np.ndarray: Array of midpoint values for each interval.
+    labels: Array of labels representing indices of standard intervals.
+    standard_intervals: List of predefined intervals, where each interval is a tuple (min, max).
+    :returns: Array of midpoint values for each interval.
     """
     intervals = [standard_intervals[label] for label in labels]
     midpoints = [(interval[0] + interval[1]) / 2.0 for interval in intervals]

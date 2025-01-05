@@ -35,9 +35,7 @@ class PriceRegressorXGBoostModel(AbstractModel):
             **asdict(self.hyperparams), enable_categorical=True, device="cuda"
         )
 
-    def eval(
-        self, y_pred: np.ndarray, y_test: np.ndarray
-    ) -> RegressionEvaluationResults:
+    def eval(self, y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
         return evaluate_regression(y_pred, y_test)
 
     def fit(self, X_train: np.ndarray, y_train: np.ndarray):
