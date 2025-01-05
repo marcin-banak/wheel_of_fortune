@@ -14,11 +14,15 @@ class AbstractHyperparams:
 class AbstractModel(ABC):
     hyperparams: AbstractHyperparams
 
-    def score(self, X_test: np.ndarray, y_test: np.ndarray) -> AbstractEvaluationResults:
+    def score(
+        self, X_test: np.ndarray, y_test: np.ndarray
+    ) -> AbstractEvaluationResults:
         return self.eval(self.predict(X_test), y_test)
 
     def feature_importance(self):
-        parameters, values = zip(*sorted(self._feature_importance(), key=lambda x: x[1]))
+        parameters, values = zip(
+            *sorted(self._feature_importance(), key=lambda x: x[1])
+        )
         fig = go.Figure(data=go.Bar(x=values, y=parameters, orientation="h"))
         fig.update_layout(
             xaxis_title="Weight",
