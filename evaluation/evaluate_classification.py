@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import List, Tuple
 
 import numpy as np
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, mean_absolute_error
 
 from evaluation.AbstractEvaluationResults import AbstractEvaluationResults
 from utils.calculate_ideal_distance import calculate_ideal_distance
@@ -21,6 +21,7 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
     precision: float
     recall: float
     f1: float
+    mean_classes_error: float
     # roc_auc: float = None
 
     IDEAL_METRICS = {
@@ -28,6 +29,7 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
         "precision": 1.0,
         "recall": 1.0,
         "f1": 1.0,
+        "mean_classes_error": 0.0,
     }  # "roc_auc": 1.0}
 
     @property
@@ -37,7 +39,8 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
             "precision": self.precision,
             "recall": self.recall,
             "f1": self.f1,
-            # "roc_auc": self.roc_auc,
+            "mean_classes_error": self.mean_classes_error,
+            #"roc_auc": self.roc_auc,
         }
         return calculate_ideal_distance(self.IDEAL_METRICS, metrics)
 
@@ -48,14 +51,6 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
             + 0.15 * self.recall
             + 0.1 * self.f1
         )
-        score = (
-            0.4 * self.accuracy
-            + 0.35 * self.precision
-            + 0.15 * self.recall
-            + 0.1 * self.f1
-            + 0.1 * self.roc_auc
-        )
-        return score
 
     def __gt__(self, other: ClassificationEvaluationResults) -> bool:
         if not isinstance(other, ClassificationEvaluationResults):
@@ -87,6 +82,7 @@ def evaluate_classification(
     precision = precision_score(y_test, y_pred, average="weighted", zero_division=0)
     recall = recall_score(y_test, y_pred, average="weighted", zero_division=0)
     f1 = f1_score(y_test, y_pred, average="weighted", zero_division=0)
+    mean_classes_error = mean_absolute_error(y_test, y_pred)
 
     if y_pred_proba is not None:
         # Handle binary and multi-class cases
@@ -104,6 +100,7 @@ def evaluate_classification(
         precision=precision,
         recall=recall,
         f1=f1,
+        mean_classes_error=mean_classes_error,
         # roc_auc=roc_auc,
     )
 
