@@ -4,7 +4,13 @@ from dataclasses import dataclass
 from typing import List, Tuple
 
 import numpy as np
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, mean_absolute_error
+from sklearn.metrics import (
+    accuracy_score,
+    f1_score,
+    precision_score,
+    recall_score,
+    mean_absolute_error,
+)
 
 from evaluation.AbstractEvaluationResults import AbstractEvaluationResults
 from utils.calculate_ideal_distance import calculate_ideal_distance
@@ -40,7 +46,7 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
             "recall": self.recall,
             "f1": self.f1,
             "mean_classes_error": self.mean_classes_error,
-            #"roc_auc": self.roc_auc,
+            # "roc_auc": self.roc_auc,
         }
         return calculate_ideal_distance(self.IDEAL_METRICS, metrics)
 
