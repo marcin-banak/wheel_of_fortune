@@ -54,7 +54,7 @@ class PriceClassifierXGBoostModel(AbstractModel):
 
     CPU_RUN_PARAMS = {"tree_method": "hist", "n_jobs": -1}
 
-    GPU_RUN_PARAMS = {"tree_method": "gpu_hist", "gpu_id": 0}
+    GPU_RUN_PARAMS = {"device": "cuda", "tree_method": "hist"}
 
     def __init__(
         self,
