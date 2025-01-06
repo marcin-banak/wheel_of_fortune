@@ -7,14 +7,12 @@ import numpy as np
 from skopt import gp_minimize
 from skopt.space import Categorical, Integer, Real
 
-project_root = Path(__file__).resolve().parents[1]
-sys.path.append(str(project_root))
-
 from models.AbstractModel import AbstractHyperparams, AbstractModel
 
 import json
 from dataclasses import asdict
 from utils.numpy_to_python import numpy_to_python
+from evaluation.AbstractEvaluationResults import MetricEnum, METRIC_REVERSE_COMPARE
 
 EXPORT_DIR = Path(__file__).parent.parent / "tuning_results"
 
@@ -23,6 +21,7 @@ def bayesian_optimization(
     model_name: str,
     model_class: Type[AbstractModel],
     hyperparam_class: Type[AbstractHyperparams],
+    metric: MetricEnum,
     X_train: np.ndarray,
     y_train: np.ndarray,
     X_val: np.ndarray,
@@ -44,7 +43,7 @@ def bayesian_optimization(
     """
 
     best_model = None
-    best_score = None
+    best_results = None
 
     def create_param_space():
         dimensions = []
@@ -70,7 +69,7 @@ def bayesian_optimization(
         return dimensions
 
     def objective_function(param_values: Tuple):
-        nonlocal best_model, best_score
+        nonlocal best_model, best_results
 
         params = {dim.name: param_values[i] for i, dim in enumerate(dimensions)}
 
@@ -79,11 +78,11 @@ def bayesian_optimization(
         model = model_class(hyperparams, gpu_mode)
 
         model.fit(X_train, y_train)
-        evaluation_results = model.score(X_val, y_val)
-        print(f"Actual score: {evaluation_results}")
+        results = model.score(X_val, y_val)
+        print(f"Actual score: {results}")
 
-        if best_score is None or best_score < evaluation_results:
-            best_score = evaluation_results
+        if best_results is None or results.compare(best_results, metric):
+            best_results = results
             best_model = model
 
             with open(EXPORT_DIR / f"{model_name}.json", "w") as f:
@@ -91,10 +90,10 @@ def bayesian_optimization(
                     asdict(best_model.hyperparams), f, indent=4, default=numpy_to_python
                 )
 
-        print(f"Best score: {best_score}")
+        print(f"Best score: {best_results}")
         print(f"Best score hyperparams: {best_model.hyperparams}")
 
-        return -evaluation_results.ideal_distance
+        return results.get_metric(metric) * (-1 if METRIC_REVERSE_COMPARE[metric] else 1)
 
     dimensions = create_param_space()
 

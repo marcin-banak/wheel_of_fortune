@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Tuple
 
 import numpy as np
 from sklearn.metrics import (
@@ -16,7 +15,7 @@ from evaluation.AbstractEvaluationResults import AbstractEvaluationResults
 from utils.calculate_ideal_distance import calculate_ideal_distance
 from dataclasses import dataclass
 import numpy as np
-
+from evaluation.AbstractEvaluationResults import MetricEnum
 
 from sklearn.metrics import roc_auc_score
 
@@ -28,15 +27,14 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
     recall: float
     f1: float
     mean_classes_error: float
-    # roc_auc: float = None
+    roc_auc: float = None
 
     IDEAL_METRICS = {
         "accuracy": 1.0,
         "precision": 1.0,
         "recall": 1.0,
         "f1": 1.0,
-        "mean_classes_error": 0.0,
-    }  # "roc_auc": 1.0}
+    }
 
     @property
     def ideal_distance(self):
@@ -45,26 +43,26 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
             "precision": self.precision,
             "recall": self.recall,
             "f1": self.f1,
-            "mean_classes_error": self.mean_classes_error,
-            # "roc_auc": self.roc_auc,
         }
         return calculate_ideal_distance(self.IDEAL_METRICS, metrics)
-
-    def get_score(self):
-        return (
-            0.4 * self.accuracy
-            + 0.35 * self.precision
-            + 0.15 * self.recall
-            + 0.1 * self.f1
-        )
-
-    def __gt__(self, other: ClassificationEvaluationResults) -> bool:
-        if not isinstance(other, ClassificationEvaluationResults):
-            raise TypeError(
-                "Comparison is only supported between ClassificationEvaluationResults objects."
-            )
-        return self.ideal_distance < other.ideal_distance
-
+    
+    def get_metric(self, metric: MetricEnum):
+        match metric:
+            case MetricEnum.ACCURACY:
+                return self.accuracy
+            case MetricEnum.PRECISION:
+                return self.precision
+            case MetricEnum.RECALL:
+                return self.recall
+            case MetricEnum.F1:
+                return self.f1
+            case MetricEnum.AUC_ROC:
+                return self.roc_auc
+            case MetricEnum.MEAN_CLASTERS_ERROR:
+                return self.mean_classes_error
+            case MetricEnum.IDEAL_DISTANCE:
+                return self.ideal_distance
+        raise ValueError(f"{metric} is not implemented for ClassificationEvaluationResults")
 
 def evaluate_classification(
     y_pred: np.ndarray, y_test: np.ndarray, y_pred_proba: np.ndarray = None
@@ -107,27 +105,8 @@ def evaluate_classification(
         recall=recall,
         f1=f1,
         mean_classes_error=mean_classes_error,
-        # roc_auc=roc_auc,
+        roc_auc=roc_auc,
     )
 
 
-def values_to_class_labels(
-    values: np.ndarray, standard_intervals: List[Tuple[float, float]]
-) -> np.ndarray:
-    """
-    Assigns values to class labels based on unique intervals.
 
-    values: Array of numerical values to be assigned.
-    standard_intervals: Array of unique intervals in the form [(low1, high1), (low2, high2), ...].
-    :returns: Array of class labels corresponding to the intervals or -1 for values out of range.
-    """
-    labels = []
-    for v in values:
-        matched_label = -1
-        for label, interval in enumerate(standard_intervals):
-            low, high = interval
-            if low <= v <= high:
-                matched_label = label
-                break
-        labels.append(matched_label)
-    return np.array(labels)

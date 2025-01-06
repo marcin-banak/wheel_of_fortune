@@ -4,12 +4,14 @@ import numpy as np
 
 from models.AbstractModel import AbstractHyperparams, AbstractModel
 from utils.cartesian_product import cartesian_product
+from evaluation.AbstractEvaluationResults import MetricEnum
 
 
 def hyperparameter_tuning(
     model_class: Type[AbstractModel],
     hyperparams_class: Type[AbstractHyperparams],
     param_grid: Dict[str, List[Any]],
+    metric: MetricEnum,
     X_train: np.ndarray,
     y_train: np.ndarray,
     X_test: np.ndarray,
@@ -44,7 +46,7 @@ def hyperparameter_tuning(
         model.fit(X_train, y_train)
         results = model.score(X_test, y_test)
 
-        if not best_results or results < best_results:
+        if not best_results or results.compare(best_results, metric):
             best_results = results
             best_model = model
 

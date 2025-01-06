@@ -12,12 +12,14 @@ from utils.classification_range_generator import generate_price_intervals
 from utils.classify import classify
 from utils.encode_categorial_columns import encode_categorical_columns
 from utils.export_model import save_model
+from evaluation.AbstractEvaluationResults import MetricEnum
 
 
 def training_process(
     model_name: str,
     model_class: Type[AbstractModel],
     hyperparameters_class: Type[AbstractHyperparams],
+    metric: MetricEnum,
     intervals_function: Optional[Callable[[float], float]] = None,
     param_grid: Optional[Dict[str, List[Union[int, float, str]]]] = None,
     sample: int = 0,
@@ -52,6 +54,7 @@ def training_process(
         best_model = hyperparameter_tuning(
             model_class,
             hyperparameters_class,
+            metric,
             param_grid,
             X_train,
             y_train,
@@ -64,6 +67,7 @@ def training_process(
             model_name,
             model_class,
             hyperparameters_class,
+            metric,
             X_train,
             y_train,
             X_test,

@@ -4,7 +4,7 @@ from typing import List, Tuple
 import numpy as np
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-from evaluation.AbstractEvaluationResults import AbstractEvaluationResults
+from evaluation.AbstractEvaluationResults import AbstractEvaluationResults, MetricEnum
 from utils.calculate_ideal_distance import calculate_ideal_distance
 
 
@@ -29,16 +29,21 @@ class RegressionEvaluationResults(AbstractEvaluationResults):
             {"mae": self.mae, "rmse": self.rmse, "r2": self.r2, "mape": self.mape},
         )
 
-    def get_score(self) -> float:
-        return self.mae * 0.4 + self.rmse * 0.3 + self.mape * 0.2 + self.r2 * -0.2
-
-    def __gt__(self, other) -> bool:
-        if not isinstance(other, RegressionEvaluationResults):
-            raise TypeError(
-                "Comparison is only supported between RegressionEvaluationResults objects."
-            )
-
-        return self.ideal_distance < other.ideal_distance
+    def get_metric(self, metric: MetricEnum):
+        match metric:
+            case MetricEnum.MAE:
+                return self.mae
+            case MetricEnum.MSE:
+                return self.mse
+            case MetricEnum.RMSE:
+                return self.rmse
+            case MetricEnum.R2:
+                return self.r2
+            case MetricEnum.MAPE:
+                raise self.mape
+            case MetricEnum.IDEAL_DISTANCE:
+                return self.ideal_distance
+        raise ValueError(f"{metric} is not implemented for RegressionEvaluationResults")
 
 
 def evaluate_regression(
@@ -65,18 +70,3 @@ def evaluate_regression(
     mape = np.mean(np.abs((y_test - y_pred) / y_test)) * 100
 
     return RegressionEvaluationResults(mae=mae, mse=mse, rmse=rmse, r2=r2, mape=mape)
-
-
-def labels_to_midpoints(
-    labels: np.ndarray, standard_intervals: List[Tuple[float, float]]
-) -> np.ndarray:
-    """
-    Converts an array of labels of intervals (min, max) to an array of midpoint values.
-
-    labels: Array of labels representing indices of standard intervals.
-    standard_intervals: List of predefined intervals, where each interval is a tuple (min, max).
-    :returns: Array of midpoint values for each interval.
-    """
-    intervals = [standard_intervals[label] for label in labels]
-    midpoints = [(interval[0] + interval[1]) / 2.0 for interval in intervals]
-    return np.array(midpoints)
