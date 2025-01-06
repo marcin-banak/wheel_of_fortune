@@ -20,7 +20,7 @@ def dtype_mapping(data: pd.DataFrame) -> pd.DataFrame:
         "First_owner": "boolean",
         "Vehicle_generation": "category",
         "Advanced_model": "category",
-        "Feature_score": "Float64"
+        "Feature_score": "Float64",
     }
 
     return data.astype(dtype_mapping)
