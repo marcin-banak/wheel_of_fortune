@@ -12,8 +12,15 @@ sys.path.append(str(project_root))
 
 from models.AbstractModel import AbstractHyperparams, AbstractModel
 
+import json
+from dataclasses import asdict
+from utils.numpy_to_python import numpy_to_python
+
+EXPORT_DIR = Path(__file__).parent.parent / "tuning_results"
+
 
 def bayesian_optimization(
+    model_name: str,
     model_class: Type[AbstractModel],
     hyperparam_class: Type[AbstractHyperparams],
     X_train: np.ndarray,
@@ -35,6 +42,9 @@ def bayesian_optimization(
     :param max_iter: Maximal optimization iterations.
     :return: Optimal hiperparameter class.
     """
+
+    best_model = None
+    best_score = None
 
     def create_param_space():
         dimensions = []
@@ -60,6 +70,8 @@ def bayesian_optimization(
         return dimensions
 
     def objective_function(param_values: Tuple):
+        nonlocal best_model, best_score
+
         params = {dim.name: param_values[i] for i, dim in enumerate(dimensions)}
 
         hyperparams = hyperparam_class(**params)
@@ -68,22 +80,32 @@ def bayesian_optimization(
 
         model.fit(X_train, y_train)
         evaluation_results = model.score(X_val, y_val)
-        print(f"{evaluation_results}")
+        print(f"Actual score: {evaluation_results}")
+
+        if best_score is None or best_score < evaluation_results:
+            best_score = evaluation_results
+            best_model = model
+
+            with open(EXPORT_DIR / f"{model_name}.json", "w") as f:
+                json.dump(
+                    asdict(best_model.hyperparams), f, indent=4, default=numpy_to_python
+                )
+
+        print(f"Best score: {best_score}")
+        print(f"Best score hyperparams: {best_model.hyperparams}")
 
         return -evaluation_results.ideal_distance
 
     dimensions = create_param_space()
 
-    result = gp_minimize(
+    gp_minimize(
         func=objective_function,
         dimensions=dimensions,
         n_calls=max_iter,
         random_state=42,
     )
 
-    best_params = {dim.name: result.x[i] for i, dim in enumerate(dimensions)}
-
-    return hyperparam_class(**best_params)
+    return best_model
 
 
 if __name__ == "__main__":
