@@ -32,7 +32,7 @@ METRIC_REVERSE_COMPARE = {
     MetricEnum.RMSE: True,
     MetricEnum.R2: False,
     MetricEnum.MAPE: True,
-    MetricEnum.IDEAL_DISTANCE: True
+    MetricEnum.IDEAL_DISTANCE: True,
 }
 
 

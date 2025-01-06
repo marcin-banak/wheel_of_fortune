@@ -93,7 +93,9 @@ def bayesian_optimization(
         print(f"Best score: {best_results}")
         print(f"Best score hyperparams: {best_model.hyperparams}")
 
-        return results.get_metric(metric) * (-1 if METRIC_REVERSE_COMPARE[metric] else 1)
+        return results.get_metric(metric) * (
+            -1 if METRIC_REVERSE_COMPARE[metric] else 1
+        )
 
     dimensions = create_param_space()
 
