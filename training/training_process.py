@@ -59,7 +59,7 @@ def training_process(
         gpu_mode,
         cv,
     )
-    
+
     model = model_class(hyperparameters_class(**asdict(params)))
     score = train(model, X, y, metric, cv, bootstraping_iters)
 
