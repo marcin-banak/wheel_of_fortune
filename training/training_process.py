@@ -12,6 +12,7 @@ from utils.encode_categorial_columns import encode_categorical_columns
 from utils.export_model import save_model
 from evaluation.AbstractEvaluationResults import MetricEnum
 from training.train import train
+from dataclasses import asdict
 
 
 def training_process(
@@ -59,7 +60,7 @@ def training_process(
         cv
     )
     
-    model = model_class(hyperparameters_class(**params))
+    model = model_class(hyperparameters_class(**asdict(params)))
     score = train(model, X, y, metric, cv, bootstraping_iters)
 
     save_model(model, model_name)
