@@ -5,11 +5,7 @@ from sklearn.utils import resample
 
 
 def bootstraping(
-    model: AbstractModel,
-    X: np.ndarray,
-    y: np.ndarray,
-    metric: MetricEnum,
-    iters: int 
+    model: AbstractModel, X: np.ndarray, y: np.ndarray, metric: MetricEnum, iters: int
 ) -> float:
     results = []
     for i in range(iters):

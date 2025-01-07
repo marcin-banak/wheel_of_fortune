@@ -27,7 +27,7 @@ def training_process(
     max_iters: int = 30,
     gpu_mode: bool = False,
     cv: int = 0,
-    bootstraping_iters: int = 0
+    bootstraping_iters: int = 0,
 ):
     data = pd.read_csv("../data/processed_car_sale_ads.csv", low_memory=False)
     data = dtype_mapping(data)
@@ -57,7 +57,7 @@ def training_process(
         y,
         max_iters,
         gpu_mode,
-        cv
+        cv,
     )
     
     model = model_class(hyperparameters_class(**asdict(params)))

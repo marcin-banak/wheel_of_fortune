@@ -24,7 +24,7 @@ def bayesian_optimization(
     y: np.ndarray,
     max_iter: int = 30,
     gpu_mode: bool = False,
-    cv: int = 0
+    cv: int = 0,
 ) -> AbstractHyperparams:
     """
     Bayesian optimization for ML Model.
@@ -48,11 +48,11 @@ def bayesian_optimization(
         params = {dim.name: param_values[i] for i, dim in enumerate(dimensions)}
         hyperparams = hyperparams_class(**params)
         model = model_class(hyperparams, gpu_mode)
-        
+
         print(f"Eval for {hyperparams}")
         results = train(model, X, y, metric, cv)
         print(f"Actual results: {results}")
-        results *= (-1 if METRIC_REVERSE_COMPARE[metric] else 1)
+        results *= -1 if METRIC_REVERSE_COMPARE[metric] else 1
 
         if best_results is None or best_results < results:
             best_results = results
