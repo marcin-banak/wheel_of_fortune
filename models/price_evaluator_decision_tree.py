@@ -43,7 +43,7 @@ class PriceClassifierBasicModel(AbstractModel):
             print("PriceClassifierBasicModel doesn't support gpu_mode!")
         self.hyperparams = hyperparams
         self._feature_names = []
-        self.model = DecisionTreeClassifier(**asdict(self.hyperparams))
+        self.model = DecisionTreeClassifier(**asdict(self.hyperparams), random_state=42)
 
     def eval(
         self, y_pred: np.ndarray, y_test: np.ndarray
