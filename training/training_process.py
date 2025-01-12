@@ -28,7 +28,7 @@ def training_process(
     gpu_mode: bool = False,
     cv: int = 0,
     bootstraping_iters: int = 0,
-    print_importance: bool = False
+    print_importance: bool = False,
 ) -> Tuple[float, List[float]]:
     data = pd.read_csv("../data/processed_car_sale_ads.csv", low_memory=False)
     data = dtype_mapping(data)

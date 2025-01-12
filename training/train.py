@@ -9,8 +9,6 @@ from typing import List, Tuple, Optional
 from utils.stratified_split_with_rare_classes import stratified_train_test_split
 
 
-
-
 def train(
     model: AbstractModel,
     X: np.ndarray,
@@ -18,7 +16,7 @@ def train(
     metric: MetricEnum,
     cv: int = 0,
     bootstraping_iters: int = 0,
-    intervals: Optional[List[Tuple[int, int]]] = None
+    intervals: Optional[List[Tuple[int, int]]] = None,
 ) -> float:
 
     X_train, X_test, y_train, y_test = stratified_train_test_split(

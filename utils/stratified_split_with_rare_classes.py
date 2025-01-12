@@ -2,23 +2,24 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 
+
 def stratified_train_test_split(X, y, test_size=0.2, random_state=None):
     np.random.seed(random_state)
-    
+
     # Convert y to numpy array for easier indexing
     y = np.array(y)
-    
+
     # Ensure at least one sample of each class in the training set
     unique_classes, indices = np.unique(y, return_index=True)
     X_initial_train = X.iloc[indices]
     y_initial_train = y[indices]
-    
+
     # Remove these samples from the dataset
     mask = np.ones(len(X), dtype=bool)
     mask[indices] = False
     X_remaining = X[mask]
     y_remaining = y[mask]
-    
+
     # Split remaining data into training and test sets
     train_indices = []
     test_indices = []
@@ -33,12 +34,14 @@ def stratified_train_test_split(X, y, test_size=0.2, random_state=None):
             test_indices.extend(test_cls_indices)
             train_indices.extend(train_cls_indices)
         else:
-            train_indices.extend(cls_indices)  # Keep single-element classes in the train set
+            train_indices.extend(
+                cls_indices
+            )  # Keep single-element classes in the train set
 
     X_train = pd.concat([X_initial_train, X_remaining.iloc[train_indices]])
     y_train = list(y_initial_train) + list(y_remaining[train_indices])
-    
+
     X_test = X_remaining.iloc[test_indices]
     y_test = list(y_remaining[test_indices])
-    
+
     return X_train, X_test, y_train, y_test
