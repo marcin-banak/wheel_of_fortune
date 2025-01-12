@@ -50,19 +50,17 @@ def training_process(
         print("Price intervals:")
         [print(f"{int(interval[0])} - {int(interval[1])}") for interval in intervals]
 
-    params = const_params or asdict(
-        bayesian_optimization(
-            model_name,
-            model_class,
-            hyperparameters_class,
-            metric,
-            X,
-            y,
-            max_iters,
-            gpu_mode,
-            cv,
-        )
-    )
+    params = const_params or asdict(bayesian_optimization(
+        model_name,
+        model_class,
+        hyperparameters_class,
+        metric,
+        X,
+        y,
+        max_iters,
+        gpu_mode,
+        cv,
+    ))
 
     model = model_class(hyperparameters_class(**params))
     score = train(model, X, y, metric, cv, bootstraping_iters)
