@@ -5,6 +5,10 @@ from utils.custom_cross_validation import custom_cross_validation
 from sklearn.model_selection import train_test_split
 from sklearn.utils import resample
 from utils.bootstraping import bootstraping
+from typing import List, Tuple, Optional
+from utils.stratified_split_with_rare_classes import stratified_train_test_split
+
+
 
 
 def train(
@@ -14,9 +18,10 @@ def train(
     metric: MetricEnum,
     cv: int = 0,
     bootstraping_iters: int = 0,
+    intervals: Optional[List[Tuple[int, int]]] = None
 ) -> float:
 
-    X_train, X_test, y_train, y_test = train_test_split(
+    X_train, X_test, y_train, y_test = stratified_train_test_split(
         X, y, test_size=0.3, random_state=42
     )
     model.fit(X_train, y_train)

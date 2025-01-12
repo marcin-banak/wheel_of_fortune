@@ -28,6 +28,7 @@ def training_process(
     gpu_mode: bool = False,
     cv: int = 0,
     bootstraping_iters: int = 0,
+    print_importance: bool = False
 ) -> Tuple[float, List[float]]:
     data = pd.read_csv("../data/processed_car_sale_ads.csv", low_memory=False)
     data = dtype_mapping(data)
@@ -47,6 +48,7 @@ def training_process(
         intervals = generate_price_intervals(y.min(), y.max(), intervals_function)
         y = classify(y, intervals)
         y, intervals = class_reduction(y, intervals)
+        print(sorted(set(y)))
         print("Price intervals:")
         [print(f"{int(interval[0])} - {int(interval[1])}") for interval in intervals]
 
@@ -65,12 +67,13 @@ def training_process(
     )
 
     model = model_class(hyperparameters_class(**params))
-    score = train(model, X, y, metric, cv, bootstraping_iters)
+    score = train(model, X, y, metric, cv, bootstraping_iters, intervals)
 
     save_model(model, model_name)
 
     print(model.hyperparams)
     print(f"{metric.name.capitalize()}: {score}")
-    model.feature_importance()
+    if print_importance:
+        model.feature_importance()
 
     return score, intervals
