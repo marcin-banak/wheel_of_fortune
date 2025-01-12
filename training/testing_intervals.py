@@ -5,6 +5,7 @@ from models.AbstractModel import AbstractHyperparams, AbstractModel
 from evaluation.AbstractEvaluationResults import MetricEnum
 from utils.cast_regression_to_classification import cast_regression_to_classification
 
+
 def testing_intervals(
     model_name: str,
     model_class: Type[AbstractModel],
@@ -21,7 +22,7 @@ def testing_intervals(
 ):
     scores = []
     intervals_nums = []
-    
+
     for function in intervals_functions:
         score, intervals = training_process(
             model_name,
@@ -50,5 +51,5 @@ def testing_intervals(
         labels={"y": f"{metric_name.capitalize()}", "x": "Number of Intervals"},
         title=f"Metric Score vs. Number of Intervals",
     )
-    fig.update_traces(mode='markers+lines')
+    fig.update_traces(mode="markers+lines")
     fig.show()
