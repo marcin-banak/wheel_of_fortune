@@ -44,6 +44,17 @@ class RegressionEvaluationResults(AbstractEvaluationResults):
             case MetricEnum.IDEAL_DISTANCE:
                 return self.ideal_distance
         raise ValueError(f"{metric} is not implemented for RegressionEvaluationResults")
+    
+    def __str__(self):
+        metrics_str = (
+            f"  MAE (Mean Absolute Error): {self.mae:.4f}\n"
+            f"  MSE (Mean Squared Error): {self.mse:.4f}\n"
+            f"  RMSE (Root Mean Squared Error): {self.rmse:.4f}\n"
+            f"  R2 (R-squared): {self.r2:.4f}\n"
+            f"  MAPE (Mean Absolute Percentage Error): {self.mape:.4f}\n"
+            f"  Ideal Distance: {self.ideal_distance:.4f}"
+        )
+        return metrics_str
 
 
 def evaluate_regression(

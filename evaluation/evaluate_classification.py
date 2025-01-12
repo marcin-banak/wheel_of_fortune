@@ -63,6 +63,19 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
             case MetricEnum.IDEAL_DISTANCE:
                 return self.ideal_distance
         raise ValueError(f"{metric} is not implemented for ClassificationEvaluationResults")
+    
+    def __str__(self):
+        metrics_str = (
+            f"  Accuracy: {self.accuracy:.4f}\n"
+            f"  Precision: {self.precision:.4f}\n"
+            f"  Recall: {self.recall:.4f}\n"
+            f"  F1 Score: {self.f1:.4f}\n"
+            f"  Mean Classes Error: {self.mean_classes_error:.4f}\n"
+        )
+        if self.roc_auc is not None:
+            metrics_str += f"  ROC AUC: {self.roc_auc:.4f}\n"
+        metrics_str += f"  Ideal Distance: {self.ideal_distance:.4f}"
+        return metrics_str
 
 def evaluate_classification(
     y_pred: np.ndarray, y_test: np.ndarray, y_pred_proba: np.ndarray = None
@@ -107,6 +120,3 @@ def evaluate_classification(
         mean_classes_error=mean_classes_error,
         roc_auc=roc_auc,
     )
-
-
-

@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Optional, Type, Union
+from typing import Callable, Dict, Optional, Type, Union, Tuple, List
 
 import pandas as pd
 
@@ -28,7 +28,7 @@ def training_process(
     gpu_mode: bool = False,
     cv: int = 0,
     bootstraping_iters: int = 0,
-):
+) -> Tuple[float, List[float]]:
     data = pd.read_csv("../data/processed_car_sale_ads.csv", low_memory=False)
     data = dtype_mapping(data)
 
@@ -41,6 +41,8 @@ def training_process(
     X = data.iloc[:, 1:]
     y = data["Price"]
 
+    intervals = []
+
     if intervals_function:
         intervals = generate_price_intervals(y.min(), y.max(), intervals_function)
         y = classify(y, intervals)
@@ -48,7 +50,7 @@ def training_process(
         print("Price intervals:")
         [print(f"{int(interval[0])} - {int(interval[1])}") for interval in intervals]
 
-    params = const_params or bayesian_optimization(
+    params = const_params or asdict(bayesian_optimization(
         model_name,
         model_class,
         hyperparameters_class,
@@ -58,9 +60,9 @@ def training_process(
         max_iters,
         gpu_mode,
         cv,
-    )
+    ))
 
-    model = model_class(hyperparameters_class(**asdict(params)))
+    model = model_class(hyperparameters_class(**params))
     score = train(model, X, y, metric, cv, bootstraping_iters)
 
     save_model(model, model_name)
@@ -68,3 +70,5 @@ def training_process(
     print(model.hyperparams)
     print(f"{metric.name.capitalize()}: {score}")
     model.feature_importance()
+
+    return score, intervals
