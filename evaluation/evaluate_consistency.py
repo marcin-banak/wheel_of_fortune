@@ -2,7 +2,7 @@ import sys
 import os
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.abspath(os.path.join(current_dir, '..'))
+project_root = os.path.abspath(os.path.join(current_dir, ".."))
 sys.path.append(project_root)
 
 
@@ -15,28 +15,30 @@ from sklearn.model_selection import train_test_split
 from utils.classification_range_generator import generate_price_intervals
 from utils.classify import classify
 
+
 @dataclass
 class ConsistencyEvaluationResults:
     consistency_percentage: float
     average_distance: float
 
+
 def evaluate_model_consistency(
     regression_model_path: str,
     classification_model_path: str,
     interval_func,
-    category_encoding: bool = False
+    category_encoding: bool = False,
 ) -> ConsistencyEvaluationResults:
     """
-        Checks the consistency of regression model predictions with classifier intervals.
+    Checks the consistency of regression model predictions with classifier intervals.
 
-        Parameters:
-            regression_model_path: Path to the regression model.
-            classification_model_path: Path to the classification model.
-            interval_func: Function to generate price intervals.
+    Parameters:
+        regression_model_path: Path to the regression model.
+        classification_model_path: Path to the classification model.
+        interval_func: Function to generate price intervals.
 
-        Returns:
-            ConsistencyEvaluationResults: An object containing the percentage of consistency 
-            and the average distance from the interval.
+    Returns:
+        ConsistencyEvaluationResults: An object containing the percentage of consistency
+        and the average distance from the interval.
     """
     regression_model = load_model(regression_model_path)
     claddification_model = load_model(classification_model_path)
@@ -48,7 +50,7 @@ def evaluate_model_consistency(
     y = data["Price"]
 
     if category_encoding:
-        X = pd.get_dummies(X, drop_first=True)  
+        X = pd.get_dummies(X, drop_first=True)
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.3, random_state=42
@@ -89,6 +91,5 @@ def evaluate_model_consistency(
     )
 
     return ConsistencyEvaluationResults(
-        consistency_percentage=consistency_percentage, 
-        average_distance=average_distance
+        consistency_percentage=consistency_percentage, average_distance=average_distance
     )
