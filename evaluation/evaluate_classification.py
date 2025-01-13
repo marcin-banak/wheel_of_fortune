@@ -45,7 +45,7 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
             "f1": self.f1,
         }
         return calculate_ideal_distance(self.IDEAL_METRICS, metrics)
-    
+
     def get_metric(self, metric: MetricEnum):
         match metric:
             case MetricEnum.ACCURACY:
@@ -63,7 +63,7 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
             case MetricEnum.IDEAL_DISTANCE:
                 return self.ideal_distance
         raise ValueError(f"{metric} is not implemented for ClassificationEvaluationResults")
-    
+
     def __str__(self):
         metrics_str = (
             f"  Accuracy: {self.accuracy:.4f}\n"
@@ -76,6 +76,7 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
             metrics_str += f"  ROC AUC: {self.roc_auc:.4f}\n"
         metrics_str += f"  Ideal Distance: {self.ideal_distance:.4f}"
         return metrics_str
+
 
 def evaluate_classification(
     y_pred: np.ndarray, y_test: np.ndarray, y_pred_proba: np.ndarray = None
@@ -104,9 +105,7 @@ def evaluate_classification(
     if y_pred_proba is not None:
         # Handle binary and multi-class cases
         if len(np.unique(y_test)) > 2:
-            roc_auc = roc_auc_score(
-                y_test, y_pred_proba, multi_class="ovr", average="weighted"
-            )
+            roc_auc = roc_auc_score(y_test, y_pred_proba, multi_class="ovr", average="weighted")
         else:
             roc_auc = roc_auc_score(y_test, y_pred_proba[:, 1])
     else:

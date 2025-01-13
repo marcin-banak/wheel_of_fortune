@@ -52,9 +52,7 @@ def evaluate_model_consistency(
     if category_encoding:
         X = pd.get_dummies(X, drop_first=True)
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.3, random_state=42
-    )
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
     price_intervals = generate_price_intervals(y.min(), y.max(), interval_func)
 
@@ -86,9 +84,7 @@ def evaluate_model_consistency(
     consistency_percentage = (consistent_count / total_cases) * 100
 
     inconsistent_cases = total_cases - consistent_count
-    average_distance = (
-        total_distance / inconsistent_cases if inconsistent_cases > 0 else 0
-    )
+    average_distance = total_distance / inconsistent_cases if inconsistent_cases > 0 else 0
 
     return ConsistencyEvaluationResults(
         consistency_percentage=consistency_percentage, average_distance=average_distance

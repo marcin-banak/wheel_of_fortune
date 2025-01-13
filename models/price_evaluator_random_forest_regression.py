@@ -33,13 +33,9 @@ class PriceRegressorRandomForestModel(AbstractModel):
 
     def __init__(self, hyperparams: PriceRegressorRandomForestHyperparams):
         self.hyperparams = hyperparams
-        self.model = RandomForestRegressor(
-            **asdict(self.hyperparams), n_jobs=-1, random_state=42
-        )
+        self.model = RandomForestRegressor(**asdict(self.hyperparams), n_jobs=-1, random_state=42)
 
-    def eval(
-        self, y_pred: np.ndarray, y_test: np.ndarray
-    ) -> RegressionEvaluationResults:
+    def eval(self, y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
         return evaluate_regression(y_pred, y_test)
 
     def fit(self, X_train: np.ndarray, y_train: np.ndarray):

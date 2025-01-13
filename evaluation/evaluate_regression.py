@@ -44,7 +44,7 @@ class RegressionEvaluationResults(AbstractEvaluationResults):
             case MetricEnum.IDEAL_DISTANCE:
                 return self.ideal_distance
         raise ValueError(f"{metric} is not implemented for RegressionEvaluationResults")
-    
+
     def __str__(self):
         metrics_str = (
             f"  MAE (Mean Absolute Error): {self.mae:.4f}\n"
@@ -57,9 +57,7 @@ class RegressionEvaluationResults(AbstractEvaluationResults):
         return metrics_str
 
 
-def evaluate_regression(
-    y_pred: np.ndarray, y_test: np.ndarray
-) -> RegressionEvaluationResults:
+def evaluate_regression(y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
     """
     Calculates regression metrics for the given predicted and actual values.
 

@@ -6,10 +6,11 @@ from utils.classification_range_generator import generate_price_intervals
 from utils.classify import classify
 from utils.class_reduction import class_reduction
 from evaluation.evaluate_classification import evaluate_classification
+from evaluation.AbstractEvaluationResults import MetricEnum
 import numpy as np
 
 
-def cast_regression_to_classification(model_path: str, interval_func):
+def cast_regression_to_classification(model_path: str, interval_func, metric: MetricEnum = None):
     model = load_model(model_path)
 
     data = pd.read_csv("../data/processed_car_sale_ads.csv", low_memory=False)
@@ -18,11 +19,9 @@ def cast_regression_to_classification(model_path: str, interval_func):
     X = data.iloc[:, 1:]
     y = data["Price"]
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.3, random_state=42
-    )
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-    model.fit(X_train, y_train)
+    # model.fit(X_train, y_train)
 
     y_pred_regression = model.predict(X_test)
 
@@ -37,5 +36,11 @@ def cast_regression_to_classification(model_path: str, interval_func):
     metrics = evaluate_classification(np.array(y_pred_class), np.array(y_test_class))
 
     print("Classification metrics:\n", metrics)
+
+    if metric:
+        try:
+            return metrics.get_metric(metric), intervals
+        except:
+            print(f"Metric {metric} is not common for classificalion")
 
     return model, intervals

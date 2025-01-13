@@ -23,23 +23,30 @@ def testing_intervals(
     scores = []
     intervals_nums = []
 
-    for function in intervals_functions:
-        score, intervals = training_process(
-            model_name,
-            model_class,
-            hyperparameters_class,
-            metric,
-            function,
-            const_params,
-            sample,
-            category_encoding,
-            max_iters,
-            gpu_mode,
-            cv,
-            bootstraping_iters,
-        )
-        scores.append(score)
-        intervals_nums.append(len(intervals))
+    if "regressor" in model_name:
+        for function in intervals_functions:
+            score, intervals = cast_regression_to_classification(model_name, function, metric)
+            scores.append(score)
+            intervals_nums.append(len(intervals))
+
+    else:
+        for function in intervals_functions:
+            score, intervals = training_process(
+                model_name,
+                model_class,
+                hyperparameters_class,
+                metric,
+                function,
+                const_params,
+                sample,
+                category_encoding,
+                max_iters,
+                gpu_mode,
+                cv,
+                bootstraping_iters,
+            )
+            scores.append(score)
+            intervals_nums.append(len(intervals))
 
     sorted_data = sorted(zip(scores, intervals_nums), key=lambda x: x[1])
     sorted_scores, sorted_intervals_nums = zip(*sorted_data)
