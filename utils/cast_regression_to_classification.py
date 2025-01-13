@@ -7,14 +7,23 @@ from utils.classify import classify
 from utils.class_reduction import class_reduction
 from evaluation.evaluate_classification import evaluate_classification
 from evaluation.AbstractEvaluationResults import MetricEnum
+from utils.encode_categorial_columns import encode_categorical_columns
 import numpy as np
 
 
-def cast_regression_to_classification(model_path: str, interval_func, metric: MetricEnum = None):
+def cast_regression_to_classification(
+    model_path: str,
+    interval_func,
+    metric: MetricEnum = None,
+    category_encoding: bool = False
+):
     model = load_model(model_path)
 
     data = pd.read_csv("../data/processed_car_sale_ads.csv", low_memory=False)
     data = dtype_mapping(data)
+
+    if category_encoding:
+        encode_categorical_columns(data)
 
     X = data.iloc[:, 1:]
     y = data["Price"]
@@ -30,8 +39,8 @@ def cast_regression_to_classification(model_path: str, interval_func, metric: Me
     y_pred_class = classify(pd.Series(y_pred_regression), intervals)
     y_test_class = classify(pd.Series(y_test), intervals)
 
-    y_test_class, intervals = class_reduction(pd.Series(y_test_class), intervals)
-    y_pred_class, _ = class_reduction(pd.Series(y_pred_class), intervals)
+    # y_test_class, intervals = class_reduction(pd.Series(y_test_class), intervals)
+    # y_pred_class, _ = class_reduction(pd.Series(y_pred_class), intervals)
 
     metrics = evaluate_classification(np.array(y_pred_class), np.array(y_test_class))
 

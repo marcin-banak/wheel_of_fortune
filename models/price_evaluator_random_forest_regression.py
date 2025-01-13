@@ -19,7 +19,7 @@ class PriceRegressorRandomForestHyperparams(AbstractHyperparams):
     min_samples_leaf: int = field(metadata={"space": (1, 5), "type": "int"})
     max_features: str = field(
         metadata={
-            "space": ("auto", "sqrt", "log2"),
+            "space": ("sqrt", "log2"),
             "type": "categorical",
         }
     )
@@ -31,7 +31,9 @@ class PriceRegressorRandomForestModel(AbstractModel):
     A custom regressor model based on RandomForest for price regression tasks.
     """
 
-    def __init__(self, hyperparams: PriceRegressorRandomForestHyperparams):
+    def __init__(self, hyperparams: PriceRegressorRandomForestHyperparams, gpu_mode: bool = False):
+        if gpu_mode:
+            print("PriceRegressorRandomForestModel doesn't support gpu_mode!")
         self.hyperparams = hyperparams
         self.model = RandomForestRegressor(**asdict(self.hyperparams), n_jobs=-1, random_state=42)
 
