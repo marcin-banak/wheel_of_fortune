@@ -1,0 +1,15 @@
+{
+    "model": "AdvancedClassificationModel",
+    "learning_rate": 0.28342753546181454,
+    "reg_alpha": 5.988654664885361,
+    "reg_lambda": 6.947849330397046,
+    "max_depth": 14,
+    "n_estimators": 331,
+    "min_child_weight": 4,
+    "gamma": 0.5274712991513532,
+    "subsample": 0.7282672852414551,
+    "colsample_bytree": 0.6092202186084168,
+    "max_delta_step": 4.165099478703663,
+    "colsample_bynode": 0.9416401294594343,
+    "colsample_bylevel": 0.662172510502637
+}
