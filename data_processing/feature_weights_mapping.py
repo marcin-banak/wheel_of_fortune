@@ -166,7 +166,9 @@ features = [
     "Xenon lights",
 ]
 
-feature_weights_train_result = {feature: train_result_weights[feature] for feature in features}
+feature_weights_train_result = {
+    feature: train_result_weights[feature] for feature in features
+}
 # pprint(feature_weights)
 
 
@@ -177,7 +179,8 @@ def normalize_weights(weights, scale=100):
     max_val = values.max()
 
     normalized = {
-        key: int((value - min_val) / (max_val - min_val) * scale) for key, value in weights.items()
+        key: int((value - min_val) / (max_val - min_val) * scale)
+        for key, value in weights.items()
     }
     return normalized
 

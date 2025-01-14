@@ -25,7 +25,9 @@ def testing_intervals(
 
     if "regressor" in model_name:
         for function in intervals_functions:
-            score, intervals = cast_regression_to_classification(model_name, function, metric, category_encoding=category_encoding)
+            score, intervals = cast_regression_to_classification(
+                model_name, function, metric, category_encoding=category_encoding
+            )
             scores.append(score)
             intervals_nums.append(len(intervals))
 

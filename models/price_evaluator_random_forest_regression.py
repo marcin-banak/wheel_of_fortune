@@ -31,13 +31,19 @@ class PriceRegressorRandomForestModel(AbstractModel):
     A custom regressor model based on RandomForest for price regression tasks.
     """
 
-    def __init__(self, hyperparams: PriceRegressorRandomForestHyperparams, gpu_mode: bool = False):
+    def __init__(
+        self, hyperparams: PriceRegressorRandomForestHyperparams, gpu_mode: bool = False
+    ):
         if gpu_mode:
             print("PriceRegressorRandomForestModel doesn't support gpu_mode!")
         self.hyperparams = hyperparams
-        self.model = RandomForestRegressor(**asdict(self.hyperparams), n_jobs=-1, random_state=42)
+        self.model = RandomForestRegressor(
+            **asdict(self.hyperparams), n_jobs=-1, random_state=42
+        )
 
-    def eval(self, y_pred: np.ndarray, y_test: np.ndarray) -> RegressionEvaluationResults:
+    def eval(
+        self, y_pred: np.ndarray, y_test: np.ndarray
+    ) -> RegressionEvaluationResults:
         return evaluate_regression(y_pred, y_test)
 
     def fit(self, X_train: np.ndarray, y_train: np.ndarray):

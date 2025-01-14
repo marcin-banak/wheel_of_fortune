@@ -12,4 +12,6 @@ def custom_cross_validation(
         lambda y_test, y_pred: model.eval(y_pred, y_test).get_metric(metric),
         greater_is_better=not METRIC_REVERSE_COMPARE[metric],
     )
-    return cross_validate(model.model, X, y, cv=cv, scoring=custom_scorer)["test_score"].mean()
+    return cross_validate(model.model, X, y, cv=cv, scoring=custom_scorer)[
+        "test_score"
+    ].mean()
