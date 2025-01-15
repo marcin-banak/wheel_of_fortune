@@ -16,7 +16,7 @@ class BasicClassificationModel(AbstractClassificationModel):
         self.model.fit(X_train, y_train)
 
     def predict(self, X_test: pd.DataFrame) -> pd.Series:
-        return self.model.predict(X_test)
+        return pd.Series(self.model.predict(X_test))
 
     def _set_model_hyperparameters(self, hyperparameters_dict: Params):
-        self.model.set_params(hyperparameters_dict)
+        self.model.set_params(**hyperparameters_dict)

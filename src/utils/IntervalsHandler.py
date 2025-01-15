@@ -15,7 +15,7 @@ class IntervalsHandler:
         self.intervals = [self.intervals[i] for i in used_labels]
 
         old_to_new = {old: new for new, old in enumerate(used_labels)}
-        self.data = [old_to_new[label] for label in self.data]
+        self.data = pd.Series([old_to_new[label] for label in self.data])
 
     def classify(self):
         self.data = self._classify(self.data)
@@ -27,7 +27,7 @@ class IntervalsHandler:
                     return idx
             return self.intervals_number - 1
 
-        return data.apply(find_class).astype(int)
+        return pd.Series(data.apply(find_class).astype(int))
 
     def _generate_price_intervals(self, A: int, B: int) -> List[Tuple[float, float]]:
         intervals = []

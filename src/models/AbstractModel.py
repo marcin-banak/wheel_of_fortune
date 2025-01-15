@@ -25,6 +25,7 @@ from src.common.types import Params
 from src.common.json_dump import json_dump
 from src.evaluation.AbstractEvaluationResults import AbstractEvaluationResults, MetricEnum
 from src.hyperparameters.AbstractHyperparameters import AbstractHyperparameters
+from src.utils.stratified_resample import stratified_resample
 
 
 class AbstractModel(ABC):
@@ -32,7 +33,7 @@ class AbstractModel(ABC):
     gpu_mode: bool
 
     HYPERPARAMETERS_CLASS: Type[AbstractHyperparameters]
-    CPU_MODE_PARAMS: Params = {"n_jobs": -1}
+    CPU_MODE_PARAMS: Params = {}
     GPU_MODE_PARAMS: Params = {}
 
     def __init__(self, hyperparameters_dict: Params = {}, gpu_mode: bool = False):
@@ -72,7 +73,7 @@ class AbstractModel(ABC):
         self._set_model_hyperparameters(hyperparameters_dict)
 
     def save_model(self, name: str):
-        Config.saved_models_dir.parent.mkdir(exist_ok=True, parents=True)
+        Config.saved_models_dir.mkdir(exist_ok=True, parents=True)
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         model_path = Config.saved_models_dir / f"{name}_{current_time}.pkl"
         with open(model_path, "wb") as f:
@@ -110,9 +111,9 @@ class AbstractModel(ABC):
     def bootstraping(self, X: pd.DataFrame, y: pd.Series, iters: int, metric: MetricEnum) -> float:
         results = []
         for i in range(iters):
-            X_resampled, y_resampled = resample(X, y, replace=True, random_state=i)
+            X_resampled, y_resampled = stratified_resample(X, y, random_state=i)
             self.fit(X_resampled, y_resampled)
-            results.append(self.score(X, y).get_metric(metric))
+            results.append(self.score(X.to_numpy(), y.to_numpy()).get_metric(metric))
         return np.array(results).mean()
 
     def cross_validation(self, X: pd.DataFrame, y: pd.Series, cv: int, metric: MetricEnum) -> float:
