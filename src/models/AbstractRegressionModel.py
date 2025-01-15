@@ -1,9 +1,9 @@
-from models.AbstractModel import AbstractModel
-from evaluation.RegressionEvaluationResults import RegressionEvaluationResults
-from evaluation.ClassificationEvaluationResults import ClassificationEvaluationResults
-from common.IntervalsHandler import IntervalsHandler
-from utils.classify import classify
 import pandas as pd
+
+from src.evaluation.ClassificationEvaluationResults import ClassificationEvaluationResults
+from src.evaluation.RegressionEvaluationResults import RegressionEvaluationResults
+from src.models.AbstractModel import AbstractModel
+from src.utils.IntervalsHandler import IntervalsHandler
 
 
 class AbstractRegressionModel(AbstractModel):
@@ -11,8 +11,14 @@ class AbstractRegressionModel(AbstractModel):
         return RegressionEvaluationResults(y_pred, y_test)
     
     def eval_classification(
-        self, y_pred: pd.Series, y_test: pd.Series, intervals_handler: IntervalsHandler
+        self, y_pred: pd.Series, y_test: pd.Series
     ) -> ClassificationEvaluationResults:
-        y_pred_class = classify(pd.Series(y_pred), intervals_handler.intervals)
-        y_test_class = classify(pd.Series(y_test), intervals_handler.intervals)
-        return ClassificationEvaluationResults(y_pred_class, y_test_class)
+        return ClassificationEvaluationResults(y_pred, y_test)
+    
+    def score_classification(
+        self, X_test: pd.DataFrame, y_test: pd.Series, interval_handler: IntervalsHandler
+    ) -> ClassificationEvaluationResults:
+        return self.eval_classification(
+            interval_handler.regression_to_classification(self.predict(X_test)),
+            y_test
+        )

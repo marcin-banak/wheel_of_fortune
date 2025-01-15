@@ -1,9 +1,11 @@
-from evaluation.AbstractEvaluationResults import AbstractEvaluationResults, MetricEnum
 from dataclasses import dataclass
-from common.exceptions import MetricNotAvalible
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+from src.common.exceptions import MetricNotAvalible
+from src.evaluation.AbstractEvaluationResults import AbstractEvaluationResults, MetricEnum
 
 
 @dataclass
@@ -40,17 +42,17 @@ class RegressionEvaluationResults(AbstractEvaluationResults):
             case MetricEnum.R2:
                 return self.r2
             case MetricEnum.MAPE:
-                raise self.mape
+                return self.mape
             case MetricEnum.IDEAL_DISTANCE:
                 return self.ideal_distance
         raise MetricNotAvalible(f"{metric} is not implemented for RegressionEvaluationResults")
     
     def __str__(self):
         return (
-            f"  MAE (Mean Absolute Error): {self.mae:.4f}\n"
-            f"  MSE (Mean Squared Error): {self.mse:.4f}\n"
-            f"  RMSE (Root Mean Squared Error): {self.rmse:.4f}\n"
-            f"  R2 (R-squared): {self.r2:.4f}\n"
-            f"  MAPE (Mean Absolute Percentage Error): {self.mape:.4f}\n"
-            f"  Ideal Distance: {self.ideal_distance:.4f}"
+            f"MAE (Mean Absolute Error): {self.mae:.4f}\n"
+            f"MSE (Mean Squared Error): {self.mse:.4f}\n"
+            f"RMSE (Root Mean Squared Error): {self.rmse:.4f}\n"
+            f"R2 (R-squared): {self.r2:.4f}\n"
+            f"MAPE (Mean Absolute Percentage Error): {self.mape:.4f}\n"
+            f"Ideal Distance: {self.ideal_distance:.4f}\n"
         )

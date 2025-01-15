@@ -1,8 +1,10 @@
-from common.Config import Config
-from common.exceptions import NoProcessedDataFile
-from preprocessing.dtype_mapping import dtype_mapping
-import pandas as pd
 from typing import Tuple
+
+import pandas as pd
+
+from src.common.Config import Config
+from src.common.exceptions import NoProcessedDataFile
+from src.preprocessing.dtype_mapping import dtype_mapping
 
 
 def load_data(sample: int = 0) -> Tuple[pd.DataFrame, pd.Series]:
@@ -14,7 +16,7 @@ def load_data(sample: int = 0) -> Tuple[pd.DataFrame, pd.Series]:
     data = pd.read_csv(Config.processed_data_path, low_memory=False)
     if sample:
         data = data.sample(sample)
-    data = dtype_mapping()
+    data = dtype_mapping(data)
     for col in data.select_dtypes(include=["category", "object"]).columns:
         data[col] = data[col].astype("category").cat.codes
 

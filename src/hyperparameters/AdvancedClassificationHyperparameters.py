@@ -1,5 +1,6 @@
-from hyperparameters.AbstractHyperparameters import AbstractHyperparameters
 from dataclasses import dataclass, field
+
+from src.hyperparameters.AbstractHyperparameters import AbstractHyperparameters
 
 
 @dataclass
@@ -16,3 +17,19 @@ class AdvancedClassificationHyperparameters(AbstractHyperparameters):
     max_delta_step: float = field(metadata={"space": (0.0, 10.0), "type": "float"})
     colsample_bynode: float = field(metadata={"space": (0.5, 1.0), "type": "float"})
     colsample_bylevel: float = field(metadata={"space": (0.5, 1.0), "type": "float"})
+
+    def __str__(self) -> str:
+        return (
+            f"learning_rate: {self.learning_rate}\n"
+            f"reg_alpha: {self.reg_alpha}\n"
+            f"reg_lambda: {self.max_depth}\n"
+            f"max_depth: {self.max_depth}\n"
+            f"n_estimators: {self.n_estimators}\n"
+            f"min_child_weight: {self.min_child_weight}\n"
+            f"gamma: {self.gamma}\n"
+            f"subsample: {self.subsample}\n"
+            f"colsample_bytree: {self.colsample_bytree}\n"
+            f"max_delta_step: {self.max_delta_step}\n"
+            f"colsample_bynode: {self.colsample_bynode}\n"
+            f"colsample_bylevel: {self.colsample_bylevel}\n"
+        )

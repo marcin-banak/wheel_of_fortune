@@ -1,5 +1,6 @@
-from hyperparameters.AbstractHyperparameters import AbstractHyperparameters
 from dataclasses import dataclass, field
+
+from src.hyperparameters.AbstractHyperparameters import AbstractHyperparameters
 
 
 @dataclass
@@ -10,3 +11,13 @@ class BasicRegressionHyperparameters(AbstractHyperparameters):
     min_samples_leaf: int = field(metadata={"space": (1, 5), "type": "int"})
     max_features: str = field(metadata={"space": ("sqrt", "log2"), "type": "categorical"})
     bootstrap: bool = field(metadata={"space": (True, False), "type": "categorical"})
+
+    def __str__(self) -> str:
+        return (
+            f"n_estimators: {self.n_estimators}\n"
+            f"max_depth: {self.max_depth}\n"
+            f"min_sample_split: {self.min_samples_split}\n"
+            f"min_samples_leaf: {self.min_samples_leaf}\n"
+            f"max_features: {self.max_features}\n"
+            f"bootstrap: {self.bootstrap}\n"
+        )

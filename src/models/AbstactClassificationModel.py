@@ -1,6 +1,7 @@
-from models.AbstractModel import AbstractModel
 import pandas as pd
-from evaluation.ClassificationEvaluationResults import ClassificationEvaluationResults
+
+from src.evaluation.ClassificationEvaluationResults import ClassificationEvaluationResults
+from src.models.AbstractModel import AbstractModel
 
 
 class AbstractClassificationModel(AbstractModel):

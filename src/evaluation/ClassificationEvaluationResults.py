@@ -1,14 +1,16 @@
-from evaluation.AbstractEvaluationResults import AbstractEvaluationResults, MetricEnum
 from dataclasses import dataclass
-from common.exceptions import MetricNotAvalible
+
 import pandas as pd
 from sklearn.metrics import (
     accuracy_score,
     f1_score,
+    mean_absolute_error,
     precision_score,
     recall_score,
-    mean_absolute_error,
 )
+
+from src.common.exceptions import MetricNotAvalible
+from src.evaluation.AbstractEvaluationResults import AbstractEvaluationResults, MetricEnum
 
 
 @dataclass
@@ -51,10 +53,10 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
     
     def __str__(self):
         return (
-            f"  Accuracy: {self.accuracy:.4f}\n"
-            f"  Precision: {self.precision:.4f}\n"
-            f"  Recall: {self.recall:.4f}\n"
-            f"  F1 Score: {self.f1:.4f}\n"
-            f"  Mean Classes Error: {self.mean_classes_error:.4f}\n"
-            f"  Ideal Distance: {self.ideal_distance:.4f}"
+            f"Accuracy: {self.accuracy:.4f}\n"
+            f"Precision: {self.precision:.4f}\n"
+            f"Recall: {self.recall:.4f}\n"
+            f"F1 Score: {self.f1:.4f}\n"
+            f"Mean Classes Error: {self.mean_classes_error:.4f}\n"
+            f"Ideal Distance: {self.ideal_distance:.4f}\n"
         )

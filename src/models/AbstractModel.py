@@ -1,22 +1,30 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-import pandas as pd
-from common.Config import Config
-from common.exceptions import NoModelFile, NoHyperparametersFile, NotCompatibleHyperparametersModel
-from datetime import datetime
-import pickle
-from evaluation.AbstractEvaluationResults import AbstractEvaluationResults, MetricEnum
-from hyperparameters.AbstractHyperparameters import AbstractHyperparameters
 import json
-from dataclasses import asdict
-from typing import Type, Tuple
-from common.types import Params
-from sklearn.utils import resample
+import pickle
+from abc import ABC, abstractmethod
+from dataclasses import asdict, fields
+from datetime import datetime
+from typing import Tuple, Type
+
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import KFold
+from sklearn.utils import resample
 from skopt import gp_minimize
-from utils.create_hyperparams_space import create_hyperparams_space
+from skopt.space import Categorical, Integer, Real
+
+from src.common.Config import Config
+from src.common.exceptions import (
+    HyperparameterSpaceNotDefined,
+    NoHyperparametersFile,
+    NoModelFile,
+    NotCompatibleHyperparametersModel,
+)
+from src.common.types import Params
+from src.common.json_dump import json_dump
+from src.evaluation.AbstractEvaluationResults import AbstractEvaluationResults, MetricEnum
+from src.hyperparameters.AbstractHyperparameters import AbstractHyperparameters
 
 
 class AbstractModel(ABC):
@@ -27,9 +35,10 @@ class AbstractModel(ABC):
     CPU_MODE_PARAMS: Params = {"n_jobs": -1}
     GPU_MODE_PARAMS: Params = {}
 
-    def __init__(self, hyperparameters_dict: Params, gpu_mode: bool = False):
+    def __init__(self, hyperparameters_dict: Params = {}, gpu_mode: bool = False):
         self.gpu_mode = gpu_mode
-        self.set_hyperparameters(hyperparameters_dict)
+        if hyperparameters_dict:
+            self.set_hyperparameters(hyperparameters_dict)
         self._init_model({
             **hyperparameters_dict, 
             **(self.GPU_MODE_PARAMS if gpu_mode else self.CPU_MODE_PARAMS)
@@ -74,16 +83,15 @@ class AbstractModel(ABC):
         model_path = Config.trained_models_dir / f"{name}.pkl"
         if not model_path.exists():
             raise NoModelFile(f"There is no model file {model_path}")
-        with open(model_path, "rb") as f:
+        with open(model_path, "r") as f:
             loaded_model = pickle.load(f)
         return loaded_model
     
     def save_hyperparameters(self, name: str):
-        Config.saved_hyperparameters_dir.parent.mkdir(exist_ok=True, parents=True)
+        Config.saved_hyperparameters_dir.mkdir(exist_ok=True, parents=True)
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        hyperparameters_path = Config.saved_hyperparameters_dir / f"{name}_{current_time}.pkl"
-        with open(hyperparameters_path, "wb") as f:
-            json.dump({"model": type(self).__name__, **asdict(self.hyperparams)}, f, indent=4)
+        output_path = Config.saved_hyperparameters_dir / f"{name}_{current_time}.json"
+        json_dump({"model": type(self).__name__, **asdict(self.hyperparameters)}, output_path)
 
     def load_hyperparameters(self, name: str):
         hyperparameters_path = Config.optimized_hyperparameters_dir / f"{name}.json"
@@ -125,7 +133,8 @@ class AbstractModel(ABC):
         X_test: pd.DataFrame,
         y_test: pd.Series,
         metric: MetricEnum,
-        max_iters: int = 10
+        max_iters: int = 10,
+        verbose: bool = False
     ):
         best_hyperparameters = None
         best_norm = None
@@ -135,10 +144,12 @@ class AbstractModel(ABC):
 
             params = {dim.name: param_values[i] for i, dim in enumerate(dimensions)}
             self.set_hyperparameters(params)
-            print(f"Eval for {self.hyperparameters}")
+            if verbose:
+                print(f"Eval for:\n{self.hyperparameters}")
             self.fit(X_train, y_train)
             results = self.score(X_test, y_test)
-            print(f"Actual results: {results}")
+            if verbose:
+                print(f"Actual results:\n{results}")
             norm = results.get_metric_norm(metric)
             if best_norm is None or best_norm < norm:
                 best_norm = norm
@@ -146,7 +157,25 @@ class AbstractModel(ABC):
                 self.save_hyperparameters(f"{type(self).__name__}_bayesian")
             return norm
 
-        dimensions = create_hyperparams_space(self.HYPERPARAMETERS_CLASS)
+        dimensions = []
+
+        for field in fields(self.HYPERPARAMETERS_CLASS):
+            if not isinstance(field.metadata.get("space"), tuple):
+                raise HyperparameterSpaceNotDefined(
+                    f"Field '{field.name}' must define 'space' metadata as a tuple."
+                )
+
+            param_range = field.metadata["space"]
+            param_type = field.metadata.get("type", "float")
+
+            if param_type == "float":
+                dimensions.append(Real(*param_range, name=field.name))
+            elif param_type == "int":
+                dimensions.append(Integer(*param_range, name=field.name))
+            elif param_type == "categorical":
+                dimensions.append(Categorical(param_range, name=field.name))
+            else:
+                raise ValueError(f"Unsupported parameter type: {param_type}")
 
         gp_minimize(
             func=objective_function,
@@ -155,4 +184,4 @@ class AbstractModel(ABC):
             random_state=42,
         )
 
-        self.set_hyperparameters(best_hyperparameters)
+        self.set_hyperparameters(asdict(best_hyperparameters))

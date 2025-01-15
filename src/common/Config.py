@@ -4,7 +4,7 @@ from pathlib import Path
 class Config:
 
     # paths
-    root_dir = Path(__file__).parent.parent
+    root_dir = Path(__file__).parent.parent.parent
     saved_models_dir = root_dir / "saved_models"
     trained_models_dir = root_dir / "trained_models"
     data_path = root_dir / "data" / "raw_data.csv"

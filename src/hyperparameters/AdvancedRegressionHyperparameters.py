@@ -1,5 +1,6 @@
-from hyperparameters.AbstractHyperparameters import AbstractHyperparameters
 from dataclasses import dataclass, field
+
+from src.hyperparameters.AbstractHyperparameters import AbstractHyperparameters
 
 
 @dataclass
@@ -27,3 +28,20 @@ class AdvancedRegressionHyperparameters(AbstractHyperparameters):
             "type": "categorical",
         }
     )
+
+    def __str__(self) -> str:
+        return (
+            f"learning_rate: {self.learning_rate}\n"
+            f"reg_alpha: {self.reg_alpha}\n"
+            f"reg_lambda: {self.max_depth}\n"
+            f"max_depth: {self.max_depth}\n"
+            f"n_estimators: {self.n_estimators}\n"
+            f"min_child_weight: {self.min_child_weight}\n"
+            f"gamma: {self.gamma}\n"
+            f"subsample: {self.subsample}\n"
+            f"colsample_bytree: {self.colsample_bytree}\n"
+            f"max_delta_step: {self.max_delta_step}\n"
+            f"colsample_bynode: {self.colsample_bynode}\n"
+            f"colsample_bylevel: {self.colsample_bylevel}\n"
+            f"objective: {self.objective}\n"
+        )

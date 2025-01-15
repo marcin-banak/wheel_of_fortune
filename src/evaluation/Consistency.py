@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 
 import pandas as pd
-from common.IntervalsHandler import IntervalsHandler
+
+from src.utils.IntervalsHandler import IntervalsHandler
 
 
 @dataclass
