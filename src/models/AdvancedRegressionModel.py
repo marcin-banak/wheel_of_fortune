@@ -4,6 +4,7 @@ from xgboost import XGBRegressor
 from src.common.types import Params
 from src.hyperparameters.AdvancedRegressionHyperparameters import AdvancedRegressionHyperparameters
 from src.models.AbstractRegressionModel import AbstractRegressionModel
+from src.common.Config import Config
 
 
 class AdvancedRegressionModel(AbstractRegressionModel):
@@ -19,6 +20,11 @@ class AdvancedRegressionModel(AbstractRegressionModel):
 
     def predict(self, X_test: pd.DataFrame) -> pd.Series:
         return pd.Series(self.model.predict(X_test))
+
+    def export_xgboost_instance(self, name: str):
+        Config.saved_models_dir.mkdir(exist_ok=True, parents=True)
+        models_path = Config.saved_models_dir / f"{name}.ubj"
+        self.model.save_model(models_path)
 
     def _set_model_hyperparameters(self, hyperparameters_dict: Params):
         self.model.set_params(**hyperparameters_dict)
