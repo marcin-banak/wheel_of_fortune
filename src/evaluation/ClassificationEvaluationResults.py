@@ -25,7 +25,7 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
         MetricEnum.ACCURACY: 1.0,
         MetricEnum.PRECISION: 1.0,
         MetricEnum.RECALL: 1.0,
-        MetricEnum.F1: 1.0
+        MetricEnum.F1: 1.0,
     }
 
     def __init__(self, y_pred: pd.Series, y_test: pd.Series):
@@ -50,7 +50,7 @@ class ClassificationEvaluationResults(AbstractEvaluationResults):
             case MetricEnum.IDEAL_DISTANCE:
                 return self.ideal_distance
         raise MetricNotAvalible(f"{metric} is not implemented for ClassificationEvaluationResults")
-    
+
     def __str__(self):
         return (
             f"Accuracy: {self.accuracy:.4f}\n"

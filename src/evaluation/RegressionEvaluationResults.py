@@ -21,7 +21,7 @@ class RegressionEvaluationResults(AbstractEvaluationResults):
         MetricEnum.MSE: 0.0,
         MetricEnum.RMSE: 0.0,
         MetricEnum.R2: 1.0,
-        MetricEnum.MAPE: 0.0
+        MetricEnum.MAPE: 0.0,
     }
 
     def __init__(self, y_pred: pd.Series, y_test: pd.Series):
@@ -46,7 +46,7 @@ class RegressionEvaluationResults(AbstractEvaluationResults):
             case MetricEnum.IDEAL_DISTANCE:
                 return self.ideal_distance
         raise MetricNotAvalible(f"{metric} is not implemented for RegressionEvaluationResults")
-    
+
     def __str__(self):
         return (
             f"MAE (Mean Absolute Error): {self.mae:.4f}\n"

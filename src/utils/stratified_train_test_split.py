@@ -31,9 +31,7 @@ def stratified_train_test_split(X, y, test_size=0.3, random_state=None):
             test_indices.extend(test_cls_indices)
             train_indices.extend(train_cls_indices)
         else:
-            train_indices.extend(
-                cls_indices
-            )
+            train_indices.extend(cls_indices)
 
     X_train = pd.concat([X_initial_train, X_remaining.iloc[train_indices]])
     y_train = list(y_initial_train) + list(y_remaining[train_indices])

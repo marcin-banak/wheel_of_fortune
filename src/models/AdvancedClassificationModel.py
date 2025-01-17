@@ -2,8 +2,10 @@ import pandas as pd
 from xgboost import XGBClassifier
 
 from src.common.types import Params
+from src.hyperparameters.AdvancedClassificationHyperparameters import (
+    AdvancedClassificationHyperparameters,
+)
 from src.models.AbstactClassificationModel import AbstractClassificationModel
-from src.hyperparameters.AdvancedClassificationHyperparameters import AdvancedClassificationHyperparameters
 
 
 class AdvancedClassificationModel(AbstractClassificationModel):

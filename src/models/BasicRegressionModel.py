@@ -2,8 +2,8 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 
 from src.common.types import Params
-from src.models.AbstractRegressionModel import AbstractRegressionModel
 from src.hyperparameters.BasicRegressionHyperparameters import BasicRegressionHyperparameters
+from src.models.AbstractRegressionModel import AbstractRegressionModel
 
 
 class BasicRegressionModel(AbstractRegressionModel):

@@ -2,8 +2,8 @@ import pandas as pd
 from xgboost import XGBRegressor
 
 from src.common.types import Params
-from src.models.AbstractRegressionModel import AbstractRegressionModel
 from src.hyperparameters.AdvancedRegressionHyperparameters import AdvancedRegressionHyperparameters
+from src.models.AbstractRegressionModel import AbstractRegressionModel
 
 
 class AdvancedRegressionModel(AbstractRegressionModel):

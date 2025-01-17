@@ -21,12 +21,12 @@ from src.common.exceptions import (
     NoModelFile,
     NotCompatibleHyperparametersModel,
 )
-from src.common.types import Params
 from src.common.json_dump import json_dump
+from src.common.types import Params
 from src.evaluation.AbstractEvaluationResults import AbstractEvaluationResults, MetricEnum
 from src.hyperparameters.AbstractHyperparameters import AbstractHyperparameters
-from src.utils.stratified_resample import stratified_resample
 from src.utils.plot import plot
+from src.utils.stratified_resample import stratified_resample
 
 
 class AbstractModel(ABC):
@@ -41,10 +41,9 @@ class AbstractModel(ABC):
         self.gpu_mode = gpu_mode
         if hyperparameters_dict:
             self.set_hyperparameters(hyperparameters_dict)
-        self._init_model({
-            **hyperparameters_dict, 
-            **(self.GPU_MODE_PARAMS if gpu_mode else self.CPU_MODE_PARAMS)
-        })
+        self._init_model(
+            {**hyperparameters_dict, **(self.GPU_MODE_PARAMS if gpu_mode else self.CPU_MODE_PARAMS)}
+        )
 
     @abstractmethod
     def _init_model(self, params: Params):
@@ -88,7 +87,7 @@ class AbstractModel(ABC):
         with open(model_path, "r") as f:
             loaded_model = pickle.load(f)
         return loaded_model
-    
+
     def save_hyperparameters(self, name: str):
         Config.saved_hyperparameters_dir.mkdir(exist_ok=True, parents=True)
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -120,7 +119,7 @@ class AbstractModel(ABC):
     def cross_validation(self, X: pd.DataFrame, y: pd.Series, cv: int, metric: MetricEnum) -> float:
         results = []
         kf = KFold(n_splits=cv, shuffle=True, random_state=42)
-        
+
         for train_index, test_index in kf.split(X):
             X_train, X_test = X.iloc[train_index], X.iloc[test_index]
             y_train, y_test = y.iloc[train_index], y.iloc[test_index]
@@ -136,7 +135,7 @@ class AbstractModel(ABC):
         y_test: pd.Series,
         metric: MetricEnum,
         max_iters: int = 10,
-        verbose: bool = False
+        verbose: bool = False,
     ):
         best_hyperparameters = None
         best_norm = None

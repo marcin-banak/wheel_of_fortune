@@ -14,11 +14,9 @@ class Consistency:
         self,
         regression_pred: pd.Series,
         classification_pred: pd.Series,
-        intervals_handler: IntervalsHandler
+        intervals_handler: IntervalsHandler,
     ):
-        classifier_intervals = [
-            intervals_handler.intervals[label] for label in classification_pred
-        ]
+        classifier_intervals = [intervals_handler.intervals[label] for label in classification_pred]
 
         total_cases = len(regression_pred)
         consistent_count = 0

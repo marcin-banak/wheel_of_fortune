@@ -47,6 +47,6 @@ class IntervalsHandler:
             x += 1
 
         return intervals
-    
+
     def regression_to_classification(self, y_pred: pd.Series) -> pd.Series:
         return self._classify(y_pred)

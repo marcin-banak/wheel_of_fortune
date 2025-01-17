@@ -2,8 +2,10 @@ import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 
 from src.common.types import Params
+from src.hyperparameters.BasicClassificationHyperparameters import (
+    BasicClassificationHyperparameters,
+)
 from src.models.AbstactClassificationModel import AbstractClassificationModel
-from src.hyperparameters.BasicClassificationHyperparameters import BasicClassificationHyperparameters
 
 
 class BasicClassificationModel(AbstractClassificationModel):

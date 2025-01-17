@@ -1,5 +1,6 @@
-from src.evaluation.AbstractEvaluationResults import AbstractEvaluationResults, MetricEnum
 from typing import List
+
+from src.evaluation.AbstractEvaluationResults import AbstractEvaluationResults, MetricEnum
 
 
 def metric_list(score_list: List[AbstractEvaluationResults], metric: MetricEnum) -> List[float]:

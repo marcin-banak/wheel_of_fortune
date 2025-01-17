@@ -1,7 +1,9 @@
-import numpy as np
-from pathlib import Path
-from src.common.types import Params
 import json
+from pathlib import Path
+
+import numpy as np
+
+from src.common.types import Params
 
 
 def json_dump(obj: Params, path: Path):
@@ -17,4 +19,4 @@ def json_dump(obj: Params, path: Path):
         raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
 
     with open(path, "w") as f:
-            json.dump(obj, f, indent=4, default=numpy_to_python)
+        json.dump(obj, f, indent=4, default=numpy_to_python)
