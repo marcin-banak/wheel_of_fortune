@@ -173,11 +173,11 @@ cython_debug/
 
 
 # Ignore the data folder
-data/processed_car_sale_ads.csv
-data/Car_sale_ads.csv
+data
 
 # Ignore trained models folder
 trained_models
-tuning_results
+saved_models
+saved_hyperparameters
 
 .idea
