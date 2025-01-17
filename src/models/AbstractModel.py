@@ -26,6 +26,7 @@ from src.common.json_dump import json_dump
 from src.evaluation.AbstractEvaluationResults import AbstractEvaluationResults, MetricEnum
 from src.hyperparameters.AbstractHyperparameters import AbstractHyperparameters
 from src.utils.stratified_resample import stratified_resample
+from src.utils.plot import plot
 
 
 class AbstractModel(ABC):
@@ -139,9 +140,10 @@ class AbstractModel(ABC):
     ):
         best_hyperparameters = None
         best_norm = None
+        norms = []
 
         def objective_function(param_values: Tuple):
-            nonlocal best_norm, best_hyperparameters
+            nonlocal best_norm, best_hyperparameters, norms
 
             params = {dim.name: param_values[i] for i, dim in enumerate(dimensions)}
             self.set_hyperparameters(params)
@@ -152,11 +154,12 @@ class AbstractModel(ABC):
             if verbose:
                 print(f"Actual results:\n{results}")
             norm = results.get_metric_norm(metric)
+            norms.append(norm)
             if best_norm is None or best_norm < norm:
                 best_norm = norm
                 best_hyperparameters = self.hyperparameters
                 self.save_hyperparameters(f"{type(self).__name__}_bayesian")
-            return norm
+            return -norm
 
         dimensions = []
 
@@ -183,6 +186,14 @@ class AbstractModel(ABC):
             dimensions=dimensions,
             n_calls=max_iters,
             random_state=42,
+        )
+
+        plot(
+            [i for i, _ in enumerate(norms)],
+            {metric.name: norms},
+            f"{metric.name} by time",
+            "Iteration",
+            metric.name,
         )
 
         self.set_hyperparameters(asdict(best_hyperparameters))

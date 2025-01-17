@@ -1,0 +1,16 @@
+{
+    "model": "AdvancedRegressionModel",
+    "learning_rate": 0.05037370599764685,
+    "reg_alpha": 0.49953508235044064,
+    "reg_lambda": 7.097895718323722,
+    "max_depth": 13,
+    "n_estimators": 400,
+    "min_child_weight": 4,
+    "gamma": 1.638889424730619,
+    "subsample": 0.7658427711886209,
+    "colsample_bytree": 0.694237084793007,
+    "max_delta_step": 5.831378214057472,
+    "colsample_bynode": 0.5104245287750134,
+    "colsample_bylevel": 0.9261518677589062,
+    "objective": "reg:tweedie"
+}
