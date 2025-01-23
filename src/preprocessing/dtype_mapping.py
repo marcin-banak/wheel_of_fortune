@@ -2,6 +2,12 @@ import pandas as pd
 
 
 def dtype_mapping(data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Maps columns in the DataFrame to specific data types.
+
+    :param data: Input DataFrame containing vehicle data.
+    :return: DataFrame with columns converted to specified data types.
+    """
     dtype_mapping = {
         "Price": "Int64",
         "Condition": "category",

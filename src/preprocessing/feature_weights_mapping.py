@@ -2,8 +2,9 @@ from pprint import pprint
 
 import numpy as np
 
+# Original feature weights from training results
 train_result_weights = {
-    "Condition": 690.0,
+     "Condition": 690.0,
     "Vehicle_brand": 12182.0,
     "Vehicle_model": 16335.0,
     "Vehicle_generation": 12095.0,
@@ -90,9 +91,8 @@ train_result_weights = {
     "Velor upholstery": 975.0,
     "Xenon lights": 913.0,
 }
-# pprint(train_result_weights)
 
-# Feature list
+# List of features to extract weights for
 features = [
     "ABS",
     "ASR (traction control)",
@@ -166,27 +166,37 @@ features = [
     "Xenon lights",
 ]
 
-feature_weights_train_result = {feature: train_result_weights[feature] for feature in features}
-# pprint(feature_weights)
+# Extract weights for the specified features
+feature_weights_train_result = {
+    feature: train_result_weights[feature] for feature in features
+}
 
 
-# Normalize weights to a range of integers (e.g., 0-100)
+# Function to normalize weights to a specified scale
 def normalize_weights(weights, scale=100):
+    """
+    Normalize feature weights to a specified scale.
+
+    :param weights: Dictionary of feature weights.
+    :param scale: Target scale for normalization (default is 0-100).
+    :return: Dictionary of normalized weights.
+    """
     values = np.array(list(weights.values()))
     min_val = values.min()
     max_val = values.max()
 
     normalized = {
-        key: int((value - min_val) / (max_val - min_val) * scale) for key, value in weights.items()
+        key: int((value - min_val) / (max_val - min_val) * scale)
+        for key, value in weights.items()
     }
     return normalized
 
 
-# Normalize values
+# Normalize the extracted feature weights
 normalized_weights = normalize_weights(feature_weights_train_result, scale=100)
 
-# Print normalized weights
+# Print the normalized weights
 pprint(normalized_weights)
 
-
+# Assign normalized weights to the final feature_weights variable
 feature_weights = normalized_weights

@@ -3,6 +3,16 @@ import pandas as pd
 
 
 def stratified_train_test_split(X, y, test_size=0.3, random_state=None):
+    """
+    Splits the dataset into stratified training and test sets, ensuring class proportions are maintained.
+
+    :param X: Feature DataFrame.
+    :param y: Target array or Series.
+    :param test_size: Proportion of the dataset to include in the test split.
+    :param random_state: Random seed for reproducibility.
+    :return: A tuple containing the training features (X_train), test features (X_test),
+             training labels (y_train), and test labels (y_test).
+    """
     np.random.seed(random_state)
     y = np.array(y)
 
@@ -33,6 +43,7 @@ def stratified_train_test_split(X, y, test_size=0.3, random_state=None):
         else:
             train_indices.extend(cls_indices)
 
+    # Combine initial training samples with the remaining stratified samples
     X_train = pd.concat([X_initial_train, X_remaining.iloc[train_indices]])
     y_train = list(y_initial_train) + list(y_remaining[train_indices])
 

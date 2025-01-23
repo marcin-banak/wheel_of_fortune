@@ -9,7 +9,9 @@ class Config:
     trained_models_dir = root_dir / "trained_models"
     data_path = root_dir / "data" / "raw_data.csv"
     processed_data_path = root_dir / "data" / "processed_data.csv"
-    future_prediction_processed_data_path = root_dir / "data" / "future_prediction_processed_data.csv"
+    future_prediction_processed_data_path = (
+        root_dir / "data" / "future_prediction_processed_data.csv"
+    )
     saved_hyperparameters_dir = root_dir / "saved_hyperparameters"
     optimized_hyperparameters_dir = root_dir / "optimized_hyperparameters"
 

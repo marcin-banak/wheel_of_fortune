@@ -7,6 +7,10 @@ from typing import Dict
 
 
 class MetricEnum(Enum):
+    """
+    Enumeration of available metrics for evaluation.
+    """
+
     ACCURACY = 1
     PRECISION = 2
     RECALL = 3
@@ -39,17 +43,41 @@ METRIC_REVERSE_COMPARE = {
 
 @dataclass
 class AbstractEvaluationResults(ABC):
+    """
+    Abstract class for evaluation results.
+
+    :param IDEAL_METRICS: A dictionary of ideal metric values.
+    """
+
     IDEAL_METRICS: Dict[MetricEnum, float]
 
     @property
     def ideal_distance(self) -> float:
+        """
+        Calculates the sum of absolute differences between actual and ideal metric values.
+
+        :return: The ideal distance.
+        """
         return sum(
-            abs(self.get_metric(metric) - ideal) for metric, ideal in self.IDEAL_METRICS.items()
+            abs(self.get_metric(metric) - ideal)
+            for metric, ideal in self.IDEAL_METRICS.items()
         )
 
     @abstractmethod
-    def get_metric(metric: MetricEnum) -> float:
-        NotImplementedError
+    def get_metric(self, metric: MetricEnum) -> float:
+        """
+        Abstract method to retrieve the value of a specific metric.
 
-    def get_metric_norm(self, metric: MetricEnum) -> bool:
+        :param metric: The metric to retrieve.
+        :return: The value of the metric.
+        """
+        raise NotImplementedError
+
+    def get_metric_norm(self, metric: MetricEnum) -> float:
+        """
+        Normalizes a metric value based on its comparison direction.
+
+        :param metric: The metric to normalize.
+        :return: The normalized metric value.
+        """
         return self.get_metric(metric) * (-1 if METRIC_REVERSE_COMPARE[metric] else 1)

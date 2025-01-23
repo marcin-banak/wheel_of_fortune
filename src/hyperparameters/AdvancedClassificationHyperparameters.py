@@ -5,6 +5,23 @@ from src.hyperparameters.AbstractHyperparameters import AbstractHyperparameters
 
 @dataclass
 class AdvancedClassificationHyperparameters(AbstractHyperparameters):
+    """
+    Advanced hyperparameters for classification models.
+
+    :param learning_rate: The learning rate for the model.
+    :param reg_alpha: L1 regularization term on weights.
+    :param reg_lambda: L2 regularization term on weights.
+    :param max_depth: Maximum depth of the tree.
+    :param n_estimators: Number of trees in the ensemble.
+    :param min_child_weight: Minimum sum of instance weight needed in a child.
+    :param gamma: Minimum loss reduction required to make a further partition.
+    :param subsample: Subsample ratio of the training instances.
+    :param colsample_bytree: Subsample ratio of features for each tree.
+    :param max_delta_step: Maximum delta step allowed for weights.
+    :param colsample_bynode: Subsample ratio of features for each node split.
+    :param colsample_bylevel: Subsample ratio of features for each tree level.
+    """
+
     learning_rate: float = field(metadata={"space": (0.01, 0.3), "type": "float"})
     reg_alpha: float = field(metadata={"space": (0.0, 10.0), "type": "float"})
     reg_lambda: float = field(metadata={"space": (0.0, 10.0), "type": "float"})
@@ -19,10 +36,15 @@ class AdvancedClassificationHyperparameters(AbstractHyperparameters):
     colsample_bylevel: float = field(metadata={"space": (0.5, 1.0), "type": "float"})
 
     def __str__(self) -> str:
+        """
+        Returns a string representation of the hyperparameters.
+
+        :return: A string containing formatted hyperparameter values.
+        """
         return (
             f"learning_rate: {self.learning_rate}\n"
             f"reg_alpha: {self.reg_alpha}\n"
-            f"reg_lambda: {self.max_depth}\n"
+            f"reg_lambda: {self.reg_lambda}\n"
             f"max_depth: {self.max_depth}\n"
             f"n_estimators: {self.n_estimators}\n"
             f"min_child_weight: {self.min_child_weight}\n"

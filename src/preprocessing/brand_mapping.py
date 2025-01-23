@@ -1,3 +1,4 @@
+# Mapping of car brands to categories
 brand_mapping = {
     "budget": [
         "Aixam",
@@ -105,10 +106,12 @@ brand_mapping = {
     ],
 }
 
+# Mapping each brand to its respective category
 brand_to_category = {
     brand: category for category, brands in brand_mapping.items() for brand in brands
 }
 
+# Weights assigned to categories for various purposes (e.g., pricing or scoring)
 brand_category_weights = {
     "Luxury": 2.0,
     "Premium": 1.7,
