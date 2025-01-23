@@ -7,7 +7,7 @@ def dtype_mapping(data: pd.DataFrame) -> pd.DataFrame:
         "Condition": "category",
         "Vehicle_brand": "category",
         "Vehicle_model": "category",
-        "Production_year": "Int64",
+        "Car_age": "Int64",
         "Mileage_km": "Int64",
         "Power_HP": "Int64",
         "Displacement_cm3": "Int64",
