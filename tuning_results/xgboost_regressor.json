@@ -1,0 +1,15 @@
+{
+    "learning_rate": 0.24099746618946757,
+    "reg_alpha": 1.8343478986616382,
+    "reg_lambda": 7.796910002727695,
+    "max_depth": 10,
+    "n_estimators": 251,
+    "min_child_weight": 2,
+    "gamma": 2.296244459829336,
+    "subsample": 0.666854305569511,
+    "colsample_bytree": 0.5714334089609704,
+    "max_delta_step": 6.50888472948853,
+    "colsample_bynode": 0.5282057895135501,
+    "colsample_bylevel": 0.8609993861334124,
+    "objective": "reg:tweedie"
+}
