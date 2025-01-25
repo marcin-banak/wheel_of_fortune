@@ -5,6 +5,7 @@ import pandas as pd
 from src.common.Config import Config
 from src.common.exceptions import NoProcessedDataFile
 from src.preprocessing.dtype_mapping import dtype_mapping
+from src.utils.category_encoding import category_encoding
 
 
 def load_data(sample: int = 0) -> Tuple[pd.DataFrame, pd.Series]:
@@ -32,8 +33,7 @@ def load_data(sample: int = 0) -> Tuple[pd.DataFrame, pd.Series]:
     data = dtype_mapping(data)
 
     # Encode categorical features as integer codes
-    for col in data.select_dtypes(include=["category", "object"]).columns:
-        data[col] = data[col].astype("category").cat.codes
+    data = category_encoding(data, Config.category_mapping_path)
 
     # Separate features and target variable
     X = data.iloc[:, 1:]

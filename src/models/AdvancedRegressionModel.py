@@ -55,7 +55,7 @@ class AdvancedRegressionModel(AbstractRegressionModel):
         :param name: Name of the model file.
         """
         Config.saved_models_dir.mkdir(exist_ok=True, parents=True)
-        models_path = Config.saved_models_dir / f"{name}.ubj"
+        models_path = Config.saved_models_dir / f"{name}.bst"
         self.model.save_model(models_path)
 
     def _set_model_hyperparameters(self, hyperparameters_dict: Params):

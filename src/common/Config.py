@@ -9,6 +9,7 @@ class Config:
     trained_models_dir = root_dir / "trained_models"
     data_path = root_dir / "data" / "raw_data.csv"
     processed_data_path = root_dir / "data" / "processed_data.csv"
+    category_mapping_path = root_dir / "data" / "category_mapping.json"
     future_prediction_processed_data_path = (
         root_dir / "data" / "future_prediction_processed_data.csv"
     )
